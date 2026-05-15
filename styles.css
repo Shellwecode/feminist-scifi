@@ -1,9 +1,14 @@
 :root {
   --paper: #F4EFE5;
+  --paper-deep: #ECE5D5;
   --ink: #1F1B16;
+  --ink-soft: #4A4339;
   --muted: #BFB4A0;
+  --rule: #D8CDB7;
   --highlight: #E5DCC9;
+  --warm: #E8C26A;
   --measure: 34rem;
+  --measure-bridge: 30rem;
   --serif: 'Crimson Pro', Georgia, 'Songti SC', 'Songti TC', 'Source Han Serif TC', 'Noto Serif TC', serif;
   --sans: 'Inter', -apple-system, system-ui, sans-serif;
 }
@@ -13,6 +18,7 @@
 html {
   font-size: 100%;
   scroll-behavior: smooth;
+  scroll-snap-type: y proximity;
   -webkit-text-size-adjust: 100%;
 }
 
@@ -36,21 +42,12 @@ body {
 }
 
 main {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 8rem 1.5rem 10rem;
+  display: block;
 }
 
-.beat {
-  width: 100%;
-  max-width: var(--measure);
-  margin-bottom: 6rem;
-}
-
-.beat:last-child {
-  margin-bottom: 0;
-}
+/* =====================================================================
+   PLAQUE — small museum-wall label, used on every spread
+   ===================================================================== */
 
 .plaque {
   font-family: var(--sans);
@@ -58,10 +55,13 @@ main {
   font-weight: 500;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--ink);
-  text-align: center;
-  margin: 0 0 6rem;
+  color: var(--ink-soft);
+  margin: 0 0 2.5rem;
 }
+
+/* =====================================================================
+   PROSE — base prose styling shared by all sections
+   ===================================================================== */
 
 .prose p {
   margin: 0 0 1em;
@@ -84,37 +84,559 @@ strong {
   font-weight: 500;
 }
 
-#closing .exchange {
-  margin: 2.75rem 0;
+/* =====================================================================
+   SPREADS — full-viewport, 2-column, scroll-snap targets
+   ===================================================================== */
+
+.spread {
+  min-height: 100vh;
+  scroll-snap-align: start;
+  scroll-snap-stop: normal;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(2rem, 5vw, 5rem);
+  padding: clamp(3rem, 6vh, 5rem) clamp(2rem, 6vw, 5rem);
+  outline: none;
 }
 
-#closing .exchange:last-of-type {
-  margin-bottom: 2.75rem;
+.spread-prose {
+  max-width: 30rem;
+  justify-self: end;
+  width: 100%;
 }
 
-#closing .q {
-  margin-bottom: 1.1rem;
+.spread-prose-wide {
+  max-width: 36rem;
 }
 
-#closing .q strong {
+.spread-figure {
+  margin: 0;
+  justify-self: start;
+  width: 100%;
+  max-width: 30rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Question spreads — single line of contemplation */
+
+.spread-question .question {
+  font-size: 1.5rem;
+  line-height: 1.45;
+  font-style: italic;
+  color: var(--ink);
+}
+
+/* =====================================================================
+   PLACEHOLDERS — dashed boxes with intended dimensions and subject
+   Render the site browsable before any real illustrations exist
+   ===================================================================== */
+
+.placeholder {
+  width: 100%;
+  border: 1px dashed var(--muted);
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1.5rem;
+  text-align: center;
+  border-radius: 2px;
+  color: var(--ink-soft);
+}
+
+.placeholder[data-aspect="portrait"] {
+  aspect-ratio: 4 / 5;
+  max-height: 70vh;
+}
+
+.placeholder[data-aspect="landscape"] {
+  aspect-ratio: 5 / 4;
+  max-height: 60vh;
+}
+
+.placeholder[data-aspect="case"] {
+  aspect-ratio: 4 / 5;
+  max-height: 60vh;
+  border-style: solid;
+  border-color: var(--ink-soft);
+  border-width: 2px;
+  position: relative;
+}
+
+.placeholder[data-aspect="case"]::before,
+.placeholder[data-aspect="case"]::after {
+  content: "";
+  position: absolute;
+  background: var(--ink-soft);
+}
+
+.placeholder[data-aspect="case"]::before {
+  top: -4px; left: -4px; right: -4px; height: 1px;
+}
+
+.placeholder[data-aspect="case"]::after {
+  bottom: -4px; left: -4px; right: -4px; height: 1px;
+}
+
+.placeholder-have {
+  border-color: var(--warm);
+  border-style: solid;
+  border-width: 1px;
+}
+
+.placeholder-subject {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1rem;
+  line-height: 1.4;
+  color: var(--ink-soft);
+  max-width: 22ch;
+}
+
+.placeholder-case-label {
+  font-family: var(--serif);
+  font-size: 1.125rem;
+  line-height: 1.3;
+  color: var(--ink);
+  letter-spacing: 0.01em;
+}
+
+.placeholder-tag {
+  font-family: var(--sans);
+  font-size: 0.625rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.placeholder-have .placeholder-tag {
+  color: var(--warm);
+}
+
+/* =====================================================================
+   BRIDGE INTRO — full-viewport announcement spread
+   ===================================================================== */
+
+.spread-bridge-intro {
+  grid-template-columns: 1fr;
+  justify-items: center;
+  text-align: center;
+}
+
+.bridge-intro-content {
+  max-width: 36rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.bridge-intro-content .plaque {
+  margin-bottom: 1rem;
+}
+
+.bridge-title {
+  font-family: var(--serif);
   font-weight: 400;
   font-style: italic;
-  letter-spacing: 0.005em;
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  line-height: 1.15;
+  margin: 0;
+  color: var(--ink);
 }
 
-#closing .a {
+.bridge-meta {
+  font-family: var(--sans);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin: 0;
+}
+
+.bridge-lede {
+  font-size: 1.1875rem;
+  line-height: 1.55;
+  margin: 1.5rem 0 0;
+  color: var(--ink);
+}
+
+.bridge-hint {
+  font-family: var(--sans);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  margin: 2rem 0 0;
+}
+
+/* =====================================================================
+   BRIDGE — filing-card scroll. NOT a snap target.
+   Sticky mode headers, ruled separators, denser type.
+   ===================================================================== */
+
+.bridge {
+  background: var(--paper-deep);
+  padding: 0 1.5rem 4rem;
+  /* Bridge starts immediately after intro; deliberately not min-height: 100vh */
+}
+
+.mode-group {
+  max-width: var(--measure-bridge);
+  margin: 0 auto;
+}
+
+.mode-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--paper-deep);
+  font-family: var(--sans);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink);
+  padding: 1.25rem 0 1rem;
+  margin: 0;
+  border-bottom: 1px solid var(--ink-soft);
+  /* Slight shadow when stuck */
+  box-shadow: 0 1px 0 var(--paper-deep);
+}
+
+.case {
+  padding: 2.25rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.mode-group:last-child .case:last-child {
+  border-bottom: none;
+}
+
+.case-caption {
+  font-family: var(--sans);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0 0 0.5rem;
+  display: block;
+}
+
+.case-name {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-style: italic;
+  font-size: 1.375rem;
+  line-height: 1.25;
+  color: var(--ink);
+  margin: 0 0 1rem;
+}
+
+.case-body {
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  color: var(--ink);
+  margin: 0 0 0.875rem;
+}
+
+.case-body:last-child {
   margin-bottom: 0;
 }
 
-#closing .a em {
+.case-failure {
+  font-size: 1rem;
+  line-height: 1.55;
   font-style: italic;
+  color: var(--ink-soft);
+  border-left: 2px solid var(--warm);
+  padding-left: 1rem;
+  margin: 0.75rem 0 0;
 }
 
-@media (max-width: 640px) {
+.bridge-coda {
+  max-width: var(--measure-bridge);
+  margin: 3rem auto 0;
+  padding-top: 2rem;
+  border-top: 1px solid var(--ink-soft);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  color: var(--ink);
+}
+
+.bridge-coda p {
+  margin: 0;
+}
+
+/* =====================================================================
+   CLOSING SPREADS — empty cases + Q+A
+   Figure on the left, prose on the right (visual emphasis on absence)
+   ===================================================================== */
+
+.spread-closing-intro {
+  grid-template-columns: 1fr;
+  justify-items: center;
+  text-align: center;
+}
+
+.spread-closing-intro .spread-prose {
+  justify-self: center;
+  text-align: center;
+}
+
+.closing-instruction {
+  font-family: var(--sans);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin: 2.5rem 0 0;
+}
+
+.spread-closing .spread-figure {
+  justify-self: end;
+  order: 1;
+}
+
+.spread-closing .spread-prose {
+  justify-self: start;
+  order: 2;
+}
+
+.closing-q {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1.375rem;
+  line-height: 1.35;
+  color: var(--ink);
+  margin: 0 0 1.25rem;
+}
+
+.closing-a {
+  font-style: italic;
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  color: var(--ink);
+}
+
+.closing-coda {
+  margin-top: 2rem;
+  font-style: normal;
+  font-size: 1rem;
+  color: var(--ink-soft);
+  border-top: 1px solid var(--rule);
+  padding-top: 1.5rem;
+}
+
+/* =====================================================================
+   MOBILE — single column, illustration above prose
+   ===================================================================== */
+
+@media (max-width: 800px) {
   body { font-size: 1.0625rem; }
-  main { padding: 4.5rem 1.25rem 6rem; }
-  .beat { margin-bottom: 4.5rem; }
-  .plaque { margin-bottom: 4rem; font-size: 0.625rem; letter-spacing: 0.14em; }
-  .lede { font-size: 1.1875rem; }
-  #closing .exchange { margin: 2rem 0; }
+
+  .spread {
+    grid-template-columns: 1fr;
+    padding: 4rem 1.5rem;
+    gap: 2.5rem;
+  }
+
+  .spread-prose,
+  .spread-figure {
+    justify-self: center;
+    max-width: 32rem;
+  }
+
+  .spread-figure {
+    order: 1;
+  }
+
+  .spread-prose {
+    order: 2;
+  }
+
+  .spread-bridge-intro,
+  .spread-closing-intro {
+    padding: 5rem 1.5rem;
+  }
+
+  .spread-closing .spread-figure { order: 1; justify-self: center; }
+  .spread-closing .spread-prose { order: 2; justify-self: center; }
+
+  .bridge {
+    padding: 0 1.25rem 3rem;
+  }
+
+  .mode-header {
+    padding: 1rem 0 0.75rem;
+    font-size: 0.6875rem;
+  }
+
+  .case {
+    padding: 1.75rem 0;
+  }
+
+  .case-name {
+    font-size: 1.25rem;
+  }
+
+  .case-body {
+    font-size: 1rem;
+  }
+
+  .lede,
+  .spread-question .question,
+  .closing-q {
+    font-size: 1.1875rem;
+  }
+
+  .placeholder[data-aspect="portrait"] {
+    max-height: 50vh;
+  }
+
+  .placeholder[data-aspect="landscape"] {
+    max-height: 40vh;
+  }
+
+  .placeholder[data-aspect="case"] {
+    max-height: 45vh;
+  }
+}
+
+/* =====================================================================
+   STORYBOOK — vignettes flip horizontally as the reader scrolls
+   vertically. Pattern: sticky frame holds a horizontal track; vertical
+   scroll position drives a translate3d on the track.
+   ===================================================================== */
+
+.vignette {
+  position: relative;
+  height: calc(var(--pages, 1) * 100vh);
+}
+
+.vignette-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.vignette-track {
+  display: flex;
+  height: 100%;
+  will-change: transform;
+  /* transform is set by JS scroll handler; no CSS transition (we want
+     scroll-bound motion, not animated easing) */
+}
+
+.page {
+  flex: 0 0 100vw;
+  height: 100vh;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(2rem, 5vw, 5rem);
+  padding: clamp(3rem, 6vh, 5rem) clamp(2rem, 6vw, 5rem);
+  box-sizing: border-box;
+}
+
+/* Page-anchors are invisible scroll-snap markers. Each one sits at the
+   right vertical position inside its vignette so scrollIntoView() lands
+   the user at the correct scroll position to flip to that page. */
+.page-anchor {
+  position: absolute;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  visibility: hidden;
+  pointer-events: none;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
+/* =====================================================================
+   MEDIA — images and videos inside figures
+   ===================================================================== */
+
+figure img,
+figure video {
+  max-width: 100%;
+  max-height: 70vh;
+  width: auto;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+/* =====================================================================
+   STORYBOOK — mobile fallback. Disable sticky + horizontal track;
+   pages stack vertically, each page becomes a full-viewport spread.
+   Must come AFTER the desktop .vignette / .page rules in source order
+   so the cascade applies correctly.
+   ===================================================================== */
+
+@media (max-width: 800px) {
+  .vignette {
+    height: auto;
+  }
+
+  .vignette-sticky {
+    position: static;
+    height: auto;
+    overflow: visible;
+  }
+
+  .vignette-track {
+    display: block;
+    height: auto;
+    transform: none !important;
+    will-change: auto;
+  }
+
+  .page {
+    flex: 0 0 auto;
+    width: 100%;
+    height: auto;
+    min-height: 100vh;
+    grid-template-columns: 1fr;
+    padding: 4rem 1.5rem;
+    gap: 2.5rem;
+  }
+
+  /* Match the existing .spread mobile order: figure above prose */
+  .page .spread-figure { order: 1; justify-self: center; max-width: 32rem; }
+  .page .spread-prose { order: 2; justify-self: center; max-width: 32rem; }
+
+  /* Page-anchors lose their absolute scroll-position offset on mobile —
+     they become regular flow elements. The scroll-snap still works
+     because each .page is full-viewport tall. */
+  .page-anchor {
+    position: relative;
+    top: auto !important;
+  }
+}
+
+/* =====================================================================
+   FOCUS STATES — for keyboard navigation
+   ===================================================================== */
+
+.spread:focus-visible,
+.page-anchor:focus-visible {
+  outline: none;
+}
+
+/* Reduced-motion users get no smooth scrolling */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+    scroll-snap-type: none;
+  }
 }

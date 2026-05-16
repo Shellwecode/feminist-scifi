@@ -9,7 +9,7 @@
   --warm: #E8C26A;
   --measure: 34rem;
   --measure-bridge: 30rem;
-  --serif: 'Crimson Pro', Georgia, 'Songti SC', 'Songti TC', 'Source Han Serif TC', 'Noto Serif TC', serif;
+  --serif: 'Crimson Pro', Georgia, 'Songti SC', 'Songti TC', 'Hiragino Mincho ProN', 'Yu Mincho', 'Apple SD Gothic Neo', 'Nanum Myeongjo', 'Source Han Serif TC', 'Noto Serif TC', serif;
   --sans: 'Inter', -apple-system, system-ui, sans-serif;
 }
 
@@ -621,6 +621,203 @@ figure video {
   .page-anchor {
     position: relative;
     top: auto !important;
+  }
+}
+
+/* =====================================================================
+   OPENING — full-bleed background, language-cycling title, postcard
+   hover popovers. Overrides .spread's grid layout while keeping the
+   .spread class so existing arrow-key nav targets the opening.
+   ===================================================================== */
+
+.spread-opening {
+  display: block;
+  padding: 0;
+  position: relative;
+  overflow: hidden;
+  height: 100vh;
+  min-height: 100vh;
+}
+
+.opening-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+  user-select: none;
+  -webkit-user-drag: none;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.opening-title {
+  position: absolute;
+  top: 8%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  margin: 0;
+  padding: 0 1rem;
+  text-align: center;
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(2rem, 5.5vw, 4.25rem);
+  line-height: 1.1;
+  letter-spacing: 0.005em;
+  color: var(--ink);
+  text-shadow:
+    0 0 18px rgba(244, 239, 229, 0.55),
+    0 1px 2px rgba(244, 239, 229, 0.6);
+  white-space: nowrap;
+  pointer-events: auto;
+}
+
+.opening-title-text {
+  display: inline-block;
+  transition: opacity 400ms ease-out, transform 400ms ease-out;
+}
+
+.opening-title-text.is-fading {
+  opacity: 0;
+  transform: translateY(-6px);
+}
+
+.opening-postcards {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Children of .opening-postcards re-enable pointer events individually */
+.postcard-hotspot,
+.postcard-popover {
+  pointer-events: auto;
+}
+
+.postcard-hotspot {
+  position: absolute;
+  background: transparent;
+  border: 1.5px solid transparent;
+  border-radius: 2px;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  transition: border-color 220ms ease-out, box-shadow 220ms ease-out;
+  outline: none;
+}
+
+.postcard-hotspot:hover,
+.postcard-hotspot:focus-visible,
+.postcard-hotspot.is-active {
+  border-color: var(--warm);
+  box-shadow: 0 0 0 3px rgba(232, 194, 106, 0.25);
+}
+
+/* Debug helper: add class="show-hotspots" on .opening-postcards in
+   devtools to make all hotspots visible while refining positions */
+.opening-postcards.show-hotspots .postcard-hotspot {
+  border-color: rgba(232, 194, 106, 0.8);
+  background: rgba(232, 194, 106, 0.15);
+}
+
+.postcard-popover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 5;
+  width: 18rem;
+  max-width: calc(100vw - 2rem);
+  background: var(--paper);
+  color: var(--ink);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 1rem 1.125rem;
+  box-shadow: 0 12px 32px rgba(31, 27, 22, 0.18), 0 2px 6px rgba(31, 27, 22, 0.08);
+  font-family: var(--serif);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 220ms ease-out, transform 220ms ease-out;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.postcard-popover.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+  visibility: visible;
+}
+
+.popover-name {
+  margin: 0 0 0.25rem;
+  font-size: 1.0625rem;
+  font-weight: 500;
+  font-style: italic;
+  color: var(--ink);
+}
+
+.popover-meta {
+  margin: 0 0 0.625rem;
+  font-family: var(--sans);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.popover-intro {
+  margin: 0;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: var(--ink);
+}
+
+/* Visually hidden utility — accessible names for hotspot buttons */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Mobile adjustments for the opening */
+@media (max-width: 800px) {
+  .opening-title {
+    top: 6%;
+    font-size: clamp(1.625rem, 7vw, 2.5rem);
+    white-space: normal;
+    max-width: 90vw;
+  }
+
+  .postcard-popover {
+    width: 16rem;
+    font-size: 0.875rem;
+  }
+}
+
+/* Reduced-motion: title doesn't transition */
+@media (prefers-reduced-motion: reduce) {
+  .opening-title-text {
+    transition: none;
+  }
+  .opening-title-text.is-fading {
+    opacity: 1;
+    transform: none;
+  }
+  .postcard-popover {
+    transition: none;
   }
 }
 

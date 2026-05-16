@@ -132,6 +132,187 @@
   }
 
   // ===================================================================
+  // OPENING TITLE — rotate through languages with a smooth crossfade
+  // ===================================================================
+
+  const titleEl = document.querySelector('.opening-title-text');
+  const titleContainer = document.querySelector('.opening-title');
+  const prefersReduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (titleEl && titleContainer) {
+    const langs = [
+      { lang: 'en',      text: 'the untold stories' },
+      { lang: 'zh-Hans', text: '未被讲述的故事' },
+      { lang: 'ja',      text: '語られざる物語' },
+      { lang: 'ko',      text: '들려지지 않은 이야기들' },
+      { lang: 'es',      text: 'las historias no contadas' },
+      { lang: 'fr',      text: 'les histoires non racontées' },
+      { lang: 'pt',      text: 'as histórias não contadas' },
+    ];
+
+    let idx = 0;
+    let paused = false;
+
+    function advanceTitle() {
+      if (paused || prefersReduce) return;
+      idx = (idx + 1) % langs.length;
+      const { lang, text } = langs[idx];
+      titleEl.classList.add('is-fading');
+      setTimeout(() => {
+        titleEl.textContent = text;
+        titleEl.setAttribute('lang', lang);
+        titleEl.classList.remove('is-fading');
+      }, 400);
+    }
+
+    if (!prefersReduce) {
+      setInterval(advanceTitle, 2500);
+      titleContainer.addEventListener('mouseenter', () => { paused = true; });
+      titleContainer.addEventListener('mouseleave', () => { paused = false; });
+    }
+  }
+
+  // ===================================================================
+  // POSTCARD HOTSPOTS — show popover next to hovered postcard, with
+  // viewport-edge fallback positioning. Touch: tap toggles.
+  // ===================================================================
+
+  const hotspots = Array.from(document.querySelectorAll('.postcard-hotspot'));
+  const postcardContainer = document.querySelector('.opening-postcards');
+
+  if (hotspots.length > 0 && postcardContainer) {
+    const hideTimers = new Map();
+    let activeHotspot = null;
+
+    function getPopover(hotspot) {
+      const id = hotspot.getAttribute('aria-describedby');
+      return id ? document.getElementById(id) : null;
+    }
+
+    function positionPopover(hotspot, popover) {
+      const hRect = hotspot.getBoundingClientRect();
+      const cRect = postcardContainer.getBoundingClientRect();
+      const margin = 12;
+
+      // Measure popover (briefly without final styles applied)
+      popover.style.left = '0px';
+      popover.style.top = '0px';
+      const pWidth = popover.offsetWidth;
+      const pHeight = popover.offsetHeight;
+
+      // Default: right of hotspot, top-aligned with hotspot
+      let left = (hRect.right - cRect.left) + margin;
+      let top = hRect.top - cRect.top;
+
+      // Overflows right edge → place to the left of hotspot
+      if (hRect.right + margin + pWidth > window.innerWidth) {
+        left = (hRect.left - cRect.left) - margin - pWidth;
+      }
+
+      // Overflows bottom → shift up
+      const absTop = cRect.top + top;
+      if (absTop + pHeight > window.innerHeight - margin) {
+        top = (window.innerHeight - margin - pHeight) - cRect.top;
+      }
+
+      // Don't go above container
+      if (top < margin) top = margin;
+      // Don't go off the left
+      if (left < margin) left = margin;
+
+      popover.style.left = left + 'px';
+      popover.style.top = top + 'px';
+    }
+
+    function showPopover(hotspot) {
+      const popover = getPopover(hotspot);
+      if (!popover) return;
+      if (hideTimers.has(popover)) {
+        clearTimeout(hideTimers.get(popover));
+        hideTimers.delete(popover);
+      }
+      // Dismiss any other active popover
+      if (activeHotspot && activeHotspot !== hotspot) {
+        const prev = getPopover(activeHotspot);
+        if (prev) {
+          prev.classList.remove('is-visible');
+          activeHotspot.classList.remove('is-active');
+        }
+      }
+      positionPopover(hotspot, popover);
+      popover.classList.add('is-visible');
+      hotspot.classList.add('is-active');
+      activeHotspot = hotspot;
+    }
+
+    function hidePopover(hotspot, delay = 220) {
+      const popover = getPopover(hotspot);
+      if (!popover) return;
+      if (hideTimers.has(popover)) clearTimeout(hideTimers.get(popover));
+      const t = setTimeout(() => {
+        popover.classList.remove('is-visible');
+        hotspot.classList.remove('is-active');
+        if (activeHotspot === hotspot) activeHotspot = null;
+        hideTimers.delete(popover);
+      }, delay);
+      hideTimers.set(popover, t);
+    }
+
+    hotspots.forEach((hotspot) => {
+      const popover = getPopover(hotspot);
+      if (!popover) return;
+
+      hotspot.addEventListener('mouseenter', () => showPopover(hotspot));
+      hotspot.addEventListener('mouseleave', () => hidePopover(hotspot));
+      hotspot.addEventListener('focus', () => showPopover(hotspot));
+      hotspot.addEventListener('blur', () => hidePopover(hotspot, 0));
+
+      // Cursor entering popover keeps it open
+      popover.addEventListener('mouseenter', () => {
+        if (hideTimers.has(popover)) {
+          clearTimeout(hideTimers.get(popover));
+          hideTimers.delete(popover);
+        }
+      });
+      popover.addEventListener('mouseleave', () => hidePopover(hotspot));
+
+      // Tap toggles (works on touch and mouse without conflicting with hover)
+      hotspot.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (popover.classList.contains('is-visible')) {
+          hidePopover(hotspot, 0);
+        } else {
+          showPopover(hotspot);
+        }
+      });
+    });
+
+    // Outside tap dismisses any visible popover (touch UX)
+    document.addEventListener('click', (e) => {
+      if (!activeHotspot) return;
+      if (e.target.closest('.postcard-hotspot') || e.target.closest('.postcard-popover')) return;
+      const popover = getPopover(activeHotspot);
+      if (popover) popover.classList.remove('is-visible');
+      activeHotspot.classList.remove('is-active');
+      activeHotspot = null;
+    });
+
+    // Reposition active popover on resize
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        if (activeHotspot) {
+          const popover = getPopover(activeHotspot);
+          if (popover && popover.classList.contains('is-visible')) {
+            positionPopover(activeHotspot, popover);
+          }
+        }
+      }, 100);
+    });
+  }
+
+  // ===================================================================
   // FADE-IN figures and cases as they enter the viewport
   // ===================================================================
 

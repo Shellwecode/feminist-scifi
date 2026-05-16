@@ -15,22 +15,117 @@
   <!-- ============================================================
        OPENING
        ============================================================ -->
-  <section class="spread" id="s-opening" tabindex="-1">
-    <div class="spread-prose">
-      <p class="plaque">Opening</p>
-      <div class="prose">
-        <p class="lede">This museum begins with what got overlooked.</p>
-        <p>Not with a canon, not with a definition of feminist science fiction, not with a list of who counts. With three reading experiences — a child's, a student's, an adult's — and the small private moment in each one where presence comes into focus. Where a writer who had been there all along becomes visible because the room finally has light in the right corner.</p>
-        <p>The argument, if there is one, is that this is what the tradition does. Feminist SF makes presence visible where it had been overlooked. The form of this site is meant to do the same thing. You are about to walk through the act, not the survey.</p>
-        <p>Begin with Zhang Xiaofeng.</p>
+  <section class="spread spread-opening" id="s-opening" tabindex="-1">
+    <img class="opening-bg" src="images/open-1.png" alt="A young woman sitting at a desk lit by a lamp, the wall behind her covered in postcards of women science fiction writers across many traditions.">
+
+    <h1 class="opening-title">
+      <span class="opening-title-text" lang="en">the untold stories</span>
+    </h1>
+
+    <div class="opening-postcards">
+      <!-- Hotspot positions are starting estimates over open-1.png; refine
+           in devtools by toggling .show-hotspots on .opening-postcards -->
+
+      <button class="postcard-hotspot" data-author="zhang-xiaofeng" type="button"
+              style="left: 51%; top: 19%; width: 6.5%; height: 10%;"
+              aria-describedby="popover-zhang-xiaofeng">
+        <span class="visually-hidden">Zhang Xiaofeng</span>
+      </button>
+
+      <button class="postcard-hotspot" data-author="xia-jia" type="button"
+              style="left: 60%; top: 14%; width: 5.5%; height: 9%;"
+              aria-describedby="popover-xia-jia">
+        <span class="visually-hidden">Xia Jia</span>
+      </button>
+
+      <button class="postcard-hotspot" data-author="hao-jingfang" type="button"
+              style="left: 67%; top: 9%; width: 5%; height: 8%;"
+              aria-describedby="popover-hao-jingfang">
+        <span class="visually-hidden">Hao Jingfang</span>
+      </button>
+
+      <button class="postcard-hotspot" data-author="bora-chung" type="button"
+              style="left: 75%; top: 13%; width: 5.5%; height: 9%;"
+              aria-describedby="popover-bora-chung">
+        <span class="visually-hidden">Bora Chung</span>
+      </button>
+
+      <button class="postcard-hotspot" data-author="karin-boye" type="button"
+              style="left: 82%; top: 22%; width: 5.5%; height: 9%;"
+              aria-describedby="popover-karin-boye">
+        <span class="visually-hidden">Karin Boye</span>
+      </button>
+
+      <button class="postcard-hotspot" data-author="marlen-haushofer" type="button"
+              style="left: 73%; top: 30%; width: 5.5%; height: 9%;"
+              aria-describedby="popover-marlen-haushofer">
+        <span class="visually-hidden">Marlen Haushofer</span>
+      </button>
+
+      <button class="postcard-hotspot" data-author="leonora-miano" type="button"
+              style="left: 60%; top: 32%; width: 5.5%; height: 9%;"
+              aria-describedby="popover-leonora-miano">
+        <span class="visually-hidden">Léonora Miano</span>
+      </button>
+
+      <button class="postcard-hotspot" data-author="misha-nogha" type="button"
+              style="left: 45%; top: 32%; width: 5.5%; height: 9%;"
+              aria-describedby="popover-misha-nogha">
+        <span class="visually-hidden">Misha Nogha</span>
+      </button>
+
+      <!-- Popovers are siblings; JS positions them next to the hotspot
+           that triggers them. Hidden by default. -->
+
+      <div class="postcard-popover" id="popover-zhang-xiaofeng" role="tooltip">
+        <p class="popover-name" lang="zh-Hant">張曉風 · Zhang Xiaofeng</p>
+        <p class="popover-meta">Taiwan · 1968</p>
+        <p class="popover-intro">Wrote 《潘渡娜》 in 1968 — now recognised as the first piece of Chinese-language science fiction, a year before Le Guin's <em>Left Hand of Darkness</em>. Filed for fifty years as an essayist.</p>
       </div>
+
+      <div class="postcard-popover" id="popover-xia-jia" role="tooltip">
+        <p class="popover-name" lang="zh-Hans">夏笳 · Xia Jia</p>
+        <p class="popover-meta">China · 2010s–present</p>
+        <p class="popover-intro">Coined "porridge SF" to describe her own work — speculative writing that doesn't fit hard SF or fantasy. Translated into English by Ken Liu.</p>
+      </div>
+
+      <div class="postcard-popover" id="popover-hao-jingfang" role="tooltip">
+        <p class="popover-name" lang="zh-Hans">郝景芳 · Hao Jingfang</p>
+        <p class="popover-meta">China · 2016</p>
+        <p class="popover-intro">Won the Hugo Award for Best Novelette for <em>Folding Beijing</em> in 2016, also via Ken Liu's translation. Her novel <em>Vagabonds</em> appeared in English in 2020.</p>
+      </div>
+
+      <div class="postcard-popover" id="popover-bora-chung" role="tooltip">
+        <p class="popover-name" lang="ko">정보라 · Bora Chung</p>
+        <p class="popover-meta">Korea · 2021</p>
+        <p class="popover-intro"><em>Cursed Bunny</em> shortlisted for the International Booker in 2022 — the moment Korean weird-SF became a category English readers had a name for. Translated by Anton Hur.</p>
+      </div>
+
+      <div class="postcard-popover" id="popover-karin-boye" role="tooltip">
+        <p class="popover-name">Karin Boye</p>
+        <p class="popover-meta">Sweden · 1940</p>
+        <p class="popover-intro">Published <em>Kallocain</em> — an injectable-truth-serum dystopia — nine years before Orwell's <em>Nineteen Eighty-Four</em>. Included in Sweden's national cultural canon in 2025, eighty-five years late.</p>
+      </div>
+
+      <div class="postcard-popover" id="popover-marlen-haushofer" role="tooltip">
+        <p class="popover-name">Marlen Haushofer</p>
+        <p class="popover-meta">Austria · 1963</p>
+        <p class="popover-intro"><em>Die Wand</em> — a foundational woman-alone-after-the-end-of-the-world novel. Won the Austrian State Prize for Literature; rediscovered as SF by feminist presses two decades later.</p>
+      </div>
+
+      <div class="postcard-popover" id="popover-leonora-miano" role="tooltip">
+        <p class="popover-name">Léonora Miano</p>
+        <p class="popover-meta">Cameroon–France · 2019</p>
+        <p class="popover-intro"><em>Rouge impératrice</em> — explicit Africanfuturist SF set in 2124 in a unified Katiopa African super-state. French publishing filed it as a literary novel.</p>
+      </div>
+
+      <div class="postcard-popover" id="popover-misha-nogha" role="tooltip">
+        <p class="popover-name">Misha (Misha Nogha)</p>
+        <p class="popover-meta">Métis–Cree–Nordic · 1990</p>
+        <p class="popover-intro"><em>Red Spider, White Web</em> — the earliest full-length cyberpunk SF novel by an Indigenous woman. Reviewed in Indigenous-press venues, missed by the cyberpunk canon for twenty-two years.</p>
+      </div>
+
     </div>
-    <figure class="spread-figure">
-      <div class="placeholder" data-aspect="portrait">
-        <span class="placeholder-subject">Empty room with light through a window</span>
-        <span class="placeholder-tag">TODO · opening</span>
-      </div>
-    </figure>
   </section>
 
   <!-- ============================================================

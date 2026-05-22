@@ -690,8 +690,13 @@ figure video {
   -webkit-user-drag: none;
   pointer-events: none;
   z-index: 0;
-  -webkit-mask-image: linear-gradient(to bottom, black 0%, black 60%, transparent 100%);
-          mask-image: linear-gradient(to bottom, black 0%, black 60%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, black 75%, transparent 100%);
+          mask-image: linear-gradient(to bottom, black 0%, black 75%, transparent 100%);
+  /* Depth-of-field: image fades and blurs as the visitor scrolls past
+     the opening. --opening-scroll-progress is set by script.js (0→1). */
+  opacity: calc(1 - var(--opening-scroll-progress, 0) * 0.65);
+  filter: blur(calc(var(--opening-scroll-progress, 0) * 2.5px));
+  will-change: opacity, filter;
 }
 
 .opening-bg-scrolled {
@@ -774,7 +779,8 @@ figure video {
 /* Dark overlay over the image. Same mask as .opening-bg so they feather
    together at the bottom — image + overlay both fade out, body paper
    bleeds through where they vanish, producing a soft transparent seam
-   with V1 rather than a hard color band. */
+   with V1 rather than a hard color band. Also fades with scroll progress
+   so the overlay recedes with the image. */
 .spread-opening::before {
   content: '';
   position: absolute;
@@ -782,8 +788,9 @@ figure video {
   background: rgba(0, 0, 0, 0.4);
   z-index: 1;
   pointer-events: none;
-  -webkit-mask-image: linear-gradient(to bottom, black 0%, black 60%, transparent 100%);
-          mask-image: linear-gradient(to bottom, black 0%, black 60%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, black 75%, transparent 100%);
+          mask-image: linear-gradient(to bottom, black 0%, black 75%, transparent 100%);
+  opacity: calc(1 - var(--opening-scroll-progress, 0) * 0.7);
 }
 
 .opening-title {
@@ -811,6 +818,9 @@ figure video {
   opacity: 0;
   transition: opacity 700ms ease-out 200ms,
               transform 700ms cubic-bezier(0.2, 0.7, 0.2, 1) 200ms;
+  /* Scroll recede — multiplies with the entrance opacity. */
+  filter: opacity(calc(1 - var(--opening-scroll-progress, 0) * 0.7))
+          blur(calc(var(--opening-scroll-progress, 0) * 1.5px));
 }
 
 .spread-opening.is-entered .opening-title {
@@ -840,6 +850,9 @@ figure video {
   transform: translateY(8px);
   transition: opacity 700ms ease-out 600ms,
               transform 700ms cubic-bezier(0.2, 0.7, 0.2, 1) 600ms;
+  /* Scroll recede — multiplies with the entrance opacity. */
+  filter: opacity(calc(1 - var(--opening-scroll-progress, 0) * 0.7))
+          blur(calc(var(--opening-scroll-progress, 0) * 1.5px));
 }
 
 .spread-opening.is-entered .opening-subtext {

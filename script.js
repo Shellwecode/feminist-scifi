@@ -16,6 +16,30 @@
         opening.classList.add('is-entered');
       });
     });
+
+    // Drive a 0→1 scroll progress on the opening so its image + overlay
+    // can fade and blur as the visitor moves into V1 — depth-of-field
+    // feel: the moment we're leaving recedes as we enter the next one.
+    let openingScrollScheduled = false;
+    function updateOpeningProgress() {
+      const rect = opening.getBoundingClientRect();
+      const h = opening.offsetHeight || 1;
+      const raw = Math.max(0, Math.min(1, -rect.top / h));
+      // Ease-out (quad) so the fade ramps in gently from the top.
+      const eased = 1 - (1 - raw) * (1 - raw);
+      opening.style.setProperty('--opening-scroll-progress', eased.toFixed(3));
+    }
+    function scheduleOpeningProgress() {
+      if (openingScrollScheduled) return;
+      openingScrollScheduled = true;
+      requestAnimationFrame(() => {
+        updateOpeningProgress();
+        openingScrollScheduled = false;
+      });
+    }
+    window.addEventListener('scroll', scheduleOpeningProgress, { passive: true });
+    window.addEventListener('resize', scheduleOpeningProgress);
+    updateOpeningProgress();
   }
 
   // ===================================================================

@@ -1,16 +1,64 @@
 :root {
-  --paper: #F4EFE5;
-  --paper-deep: #ECE5D5;
-  --ink: #1F1B16;
-  --ink-soft: #4A4339;
-  --muted: #BFB4A0;
-  --rule: #D8CDB7;
-  --highlight: #E5DCC9;
-  --warm: #E8C26A;
+  --paper:      #FFFCF0;
+  --paper-deep: #F2F0E5;
+  --ink:        #100F0F;
+  --ink-soft:   #575653;
+  --muted:      #B7B5AC;
+  --rule:       #DAD8CE;
+  --highlight:  #E6E4D9;
+  --warm:       #D0A215;
   --measure: 34rem;
   --measure-bridge: 30rem;
-  --serif: 'Crimson Pro', Georgia, 'Songti SC', 'Songti TC', 'Hiragino Mincho ProN', 'Yu Mincho', 'Apple SD Gothic Neo', 'Nanum Myeongjo', 'Source Han Serif TC', 'Noto Serif TC', serif;
-  --sans: 'Inter', -apple-system, system-ui, sans-serif;
+  --serif:   'Libre Caslon Text', 'Noto Serif TC', 'Noto Serif SC', 'Noto Serif JP', 'Noto Serif KR', Georgia, serif;
+  --display: 'Libre Caslon Display', 'Libre Caslon Text', 'Noto Serif TC', 'Noto Serif SC', 'Noto Serif JP', Georgia, serif;
+  --sans:    'Public Sans', -apple-system, system-ui, sans-serif;
+  --mono:    'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Type scale — fluid where the size benefits from scaling with viewport.
+     Reach for one of these instead of writing a raw size. */
+  --fs-tag:     0.6875rem;                                    /* 11px - plaques, tags, micro UI */
+  --fs-meta:    0.8125rem;                                    /* 13px - hints, meta, sub-labels */
+  --fs-ui:      0.9375rem;                                    /* 15px - postcard popovers, compact UI */
+  --fs-body:    clamp(1rem, 0.95rem + 0.3vw, 1.1875rem);      /* 16-19px - body, lede, intro text */
+  --fs-lead:    clamp(1.25rem, 1.1rem + 0.7vw, 1.5rem);       /* 20-24px - small headings, case names */
+  --fs-title:   clamp(1.5rem, 1.3rem + 1.1vw, 2rem);          /* 24-32px - opening hero title */
+  --fs-display: clamp(2rem, 1.6rem + 2vw, 2.75rem);           /* 32-44px - bridge / display */
+
+  /* Line heights */
+  --lh-tight:   1.2;
+  --lh-snug:    1.35;
+  --lh-normal:  1.5;
+  --lh-loose:   1.6;
+
+  /* Spacing scale — every padding/margin/gap should reach for one of these. */
+  --space-xs:   0.25rem;   /* 4px */
+  --space-sm:   0.5rem;    /* 8px */
+  --space-md:   0.75rem;   /* 12px */
+  --space-lg:   1rem;      /* 16px - base */
+  --space-xl:   1.5rem;    /* 24px */
+  --space-2xl:  2rem;      /* 32px */
+  --space-3xl:  2.5rem;    /* 40px */
+  --space-4xl:  3rem;      /* 48px */
+  --space-5xl:  4rem;      /* 64px */
+  --space-6xl:  5rem;      /* 80px */
+
+  /* Section-level fluid spacing used by full-viewport spreads/pages */
+  --space-section-x:   clamp(2rem, 6vw, 5rem);
+  --space-section-y:   clamp(3rem, 6vh, 5rem);
+  --space-section-gap: clamp(2rem, 5vw, 5rem);
+}
+
+[lang="zh-Hans"], [lang^="zh-Hans"] {
+  font-family: 'Libre Caslon Text', 'Noto Serif SC', 'Noto Serif TC', Georgia, serif;
+}
+[lang="zh-Hant"], [lang^="zh-Hant"] {
+  font-family: 'Libre Caslon Text', 'Noto Serif TC', 'Noto Serif SC', Georgia, serif;
+}
+[lang="ja"], [lang^="ja"] {
+  font-family: 'Libre Caslon Text', 'Noto Serif JP', Georgia, serif;
+}
+[lang="ko"], [lang^="ko"] {
+  font-family: 'Libre Caslon Text', 'Noto Serif KR', Georgia, serif;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -28,12 +76,12 @@ body {
   color: var(--ink);
   font-family: var(--serif);
   font-weight: 400;
-  font-size: 1.1875rem;
-  line-height: 1.6;
+  font-size: var(--fs-body);
+  line-height: var(--lh-loose);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-  font-feature-settings: "kern" 1, "liga" 1, "onum" 1;
+  font-feature-settings: "kern" 1, "liga" 1;
 }
 
 ::selection {
@@ -51,12 +99,12 @@ main {
 
 .plaque {
   font-family: var(--sans);
-  font-size: 0.6875rem;
+  font-size: var(--fs-tag);
   font-weight: 500;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--ink-soft);
-  margin: 0 0 2.5rem;
+  margin: 0 0 var(--space-3xl);
 }
 
 /* =====================================================================
@@ -72,8 +120,8 @@ main {
 }
 
 .lede {
-  font-size: 1.375rem;
-  line-height: 1.5;
+  font-size: var(--fs-lead);
+  line-height: var(--lh-normal);
 }
 
 em {
@@ -81,7 +129,7 @@ em {
 }
 
 strong {
-  font-weight: 500;
+  font-weight: 700;
 }
 
 /* =====================================================================
@@ -95,8 +143,8 @@ strong {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   align-items: center;
-  gap: clamp(2rem, 5vw, 5rem);
-  padding: clamp(3rem, 6vh, 5rem) clamp(2rem, 6vw, 5rem);
+  gap: var(--space-section-gap);
+  padding: var(--space-section-y) var(--space-section-x);
   outline: none;
 }
 
@@ -123,8 +171,8 @@ strong {
 /* Question spreads — single line of contemplation */
 
 .spread-question .question {
-  font-size: 1.5rem;
-  line-height: 1.45;
+  font-size: var(--fs-title);
+  line-height: var(--lh-snug);
   font-style: italic;
   color: var(--ink);
 }
@@ -142,8 +190,8 @@ strong {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.75rem;
-  padding: 1.5rem;
+  gap: var(--space-md);
+  padding: var(--space-xl);
   text-align: center;
   border-radius: 2px;
   color: var(--ink-soft);
@@ -192,23 +240,23 @@ strong {
 .placeholder-subject {
   font-family: var(--serif);
   font-style: italic;
-  font-size: 1rem;
-  line-height: 1.4;
+  font-size: var(--fs-body);
+  line-height: var(--lh-snug);
   color: var(--ink-soft);
   max-width: 22ch;
 }
 
 .placeholder-case-label {
   font-family: var(--serif);
-  font-size: 1.125rem;
-  line-height: 1.3;
+  font-size: var(--fs-body);
+  line-height: var(--lh-snug);
   color: var(--ink);
   letter-spacing: 0.01em;
 }
 
 .placeholder-tag {
   font-family: var(--sans);
-  font-size: 0.625rem;
+  font-size: var(--fs-tag);
   font-weight: 500;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -234,26 +282,26 @@ strong {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.25rem;
+  gap: var(--space-xl);
 }
 
 .bridge-intro-content .plaque {
-  margin-bottom: 1rem;
+  margin-bottom: var(--space-lg);
 }
 
 .bridge-title {
-  font-family: var(--serif);
+  font-family: var(--display);
   font-weight: 400;
-  font-style: italic;
-  font-size: clamp(2rem, 4vw, 2.75rem);
-  line-height: 1.15;
+  font-style: normal;
+  font-size: var(--fs-display);
+  line-height: var(--lh-tight);
   margin: 0;
   color: var(--ink);
 }
 
 .bridge-meta {
   font-family: var(--sans);
-  font-size: 0.75rem;
+  font-size: var(--fs-meta);
   font-weight: 500;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -262,19 +310,20 @@ strong {
 }
 
 .bridge-lede {
-  font-size: 1.1875rem;
-  line-height: 1.55;
-  margin: 1.5rem 0 0;
+  font-size: var(--fs-body);
+  line-height: var(--lh-normal);
+  margin: var(--space-xl) 0 0;
   color: var(--ink);
 }
 
 .bridge-hint {
   font-family: var(--sans);
-  font-size: 0.75rem;
+  font-size: var(--fs-meta);
   letter-spacing: 0.08em;
   color: var(--muted);
-  margin: 2rem 0 0;
+  margin: var(--space-2xl) 0 0;
 }
+
 
 /* =====================================================================
    BRIDGE — filing-card scroll. NOT a snap target.
@@ -283,7 +332,7 @@ strong {
 
 .bridge {
   background: var(--paper-deep);
-  padding: 0 1.5rem 4rem;
+  padding: 0 var(--space-xl) var(--space-5xl);
   /* Bridge starts immediately after intro; deliberately not min-height: 100vh */
 }
 
@@ -298,12 +347,12 @@ strong {
   z-index: 10;
   background: var(--paper-deep);
   font-family: var(--sans);
-  font-size: 0.75rem;
+  font-size: var(--fs-meta);
   font-weight: 500;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--ink);
-  padding: 1.25rem 0 1rem;
+  padding: var(--space-xl) 0 var(--space-lg);
   margin: 0;
   border-bottom: 1px solid var(--ink-soft);
   /* Slight shadow when stuck */
@@ -311,7 +360,7 @@ strong {
 }
 
 .case {
-  padding: 2.25rem 0;
+  padding: var(--space-3xl) 0;
   border-bottom: 1px solid var(--rule);
 }
 
@@ -321,30 +370,30 @@ strong {
 
 .case-caption {
   font-family: var(--sans);
-  font-size: 0.6875rem;
+  font-size: var(--fs-tag);
   font-weight: 500;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--muted);
-  margin: 0 0 0.5rem;
+  margin: 0 0 var(--space-sm);
   display: block;
 }
 
 .case-name {
   font-family: var(--serif);
-  font-weight: 500;
+  font-weight: 700;
   font-style: italic;
-  font-size: 1.375rem;
-  line-height: 1.25;
+  font-size: var(--fs-lead);
+  line-height: var(--lh-snug);
   color: var(--ink);
-  margin: 0 0 1rem;
+  margin: 0 0 var(--space-lg);
 }
 
 .case-body {
-  font-size: 1.0625rem;
-  line-height: 1.6;
+  font-size: var(--fs-body);
+  line-height: var(--lh-loose);
   color: var(--ink);
-  margin: 0 0 0.875rem;
+  margin: 0 0 var(--space-lg);
 }
 
 .case-body:last-child {
@@ -352,22 +401,22 @@ strong {
 }
 
 .case-failure {
-  font-size: 1rem;
-  line-height: 1.55;
+  font-size: var(--fs-body);
+  line-height: var(--lh-normal);
   font-style: italic;
   color: var(--ink-soft);
   border-left: 2px solid var(--warm);
-  padding-left: 1rem;
-  margin: 0.75rem 0 0;
+  padding-left: var(--space-lg);
+  margin: var(--space-md) 0 0;
 }
 
 .bridge-coda {
   max-width: var(--measure-bridge);
-  margin: 3rem auto 0;
-  padding-top: 2rem;
+  margin: var(--space-4xl) auto 0;
+  padding-top: var(--space-2xl);
   border-top: 1px solid var(--ink-soft);
-  font-size: 1.0625rem;
-  line-height: 1.6;
+  font-size: var(--fs-body);
+  line-height: var(--lh-loose);
   color: var(--ink);
 }
 
@@ -393,12 +442,12 @@ strong {
 
 .closing-instruction {
   font-family: var(--sans);
-  font-size: 0.8125rem;
+  font-size: var(--fs-meta);
   font-weight: 500;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--ink-soft);
-  margin: 2.5rem 0 0;
+  margin: var(--space-3xl) 0 0;
 }
 
 .spread-closing .spread-figure {
@@ -414,26 +463,26 @@ strong {
 .closing-q {
   font-family: var(--serif);
   font-style: italic;
-  font-size: 1.375rem;
-  line-height: 1.35;
+  font-size: var(--fs-lead);
+  line-height: var(--lh-snug);
   color: var(--ink);
-  margin: 0 0 1.25rem;
+  margin: 0 0 var(--space-xl);
 }
 
 .closing-a {
   font-style: italic;
-  font-size: 1.0625rem;
-  line-height: 1.6;
+  font-size: var(--fs-body);
+  line-height: var(--lh-loose);
   color: var(--ink);
 }
 
 .closing-coda {
-  margin-top: 2rem;
+  margin-top: var(--space-2xl);
   font-style: normal;
-  font-size: 1rem;
+  font-size: var(--fs-body);
   color: var(--ink-soft);
   border-top: 1px solid var(--rule);
-  padding-top: 1.5rem;
+  padding-top: var(--space-xl);
 }
 
 /* =====================================================================
@@ -441,12 +490,10 @@ strong {
    ===================================================================== */
 
 @media (max-width: 800px) {
-  body { font-size: 1.0625rem; }
-
   .spread {
     grid-template-columns: 1fr;
-    padding: 4rem 1.5rem;
-    gap: 2.5rem;
+    padding: var(--space-5xl) var(--space-xl);
+    gap: var(--space-3xl);
   }
 
   .spread-prose,
@@ -465,37 +512,23 @@ strong {
 
   .spread-bridge-intro,
   .spread-closing-intro {
-    padding: 5rem 1.5rem;
+    padding: var(--space-6xl) var(--space-xl);
   }
 
   .spread-closing .spread-figure { order: 1; justify-self: center; }
   .spread-closing .spread-prose { order: 2; justify-self: center; }
 
   .bridge {
-    padding: 0 1.25rem 3rem;
+    padding: 0 var(--space-xl) var(--space-4xl);
   }
 
   .mode-header {
-    padding: 1rem 0 0.75rem;
-    font-size: 0.6875rem;
+    padding: var(--space-lg) 0 var(--space-md);
+    font-size: var(--fs-tag);
   }
 
   .case {
-    padding: 1.75rem 0;
-  }
-
-  .case-name {
-    font-size: 1.25rem;
-  }
-
-  .case-body {
-    font-size: 1rem;
-  }
-
-  .lede,
-  .spread-question .question,
-  .closing-q {
-    font-size: 1.1875rem;
+    padding: var(--space-2xl) 0;
   }
 
   .placeholder[data-aspect="portrait"] {
@@ -543,8 +576,8 @@ strong {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   align-items: center;
-  gap: clamp(2rem, 5vw, 5rem);
-  padding: clamp(3rem, 6vh, 5rem) clamp(2rem, 6vw, 5rem);
+  gap: var(--space-section-gap);
+  padding: var(--space-section-y) var(--space-section-x);
   box-sizing: border-box;
 }
 
@@ -607,8 +640,8 @@ figure video {
     height: auto;
     min-height: 100vh;
     grid-template-columns: 1fr;
-    padding: 4rem 1.5rem;
-    gap: 2.5rem;
+    padding: var(--space-5xl) var(--space-xl);
+    gap: var(--space-3xl);
   }
 
   /* Match the existing .spread mobile order: figure above prose */
@@ -637,6 +670,13 @@ figure video {
   overflow: hidden;
   height: 100vh;
   min-height: 100vh;
+
+  /* Grid system (matches the `g`-toggle overlay): 3% margin, 12 cols x 8 rows.
+     To anchor an element: left = 3vw + (col-1) * var(--col), etc. */
+  --grid-margin-x: 3vw;
+  --grid-margin-y: 3vh;
+  --col: calc((100vw - 2 * var(--grid-margin-x)) / 12);
+  --row: calc((100vh - 2 * var(--grid-margin-y)) / 8);
 }
 
 .opening-bg {
@@ -650,39 +690,197 @@ figure video {
   -webkit-user-drag: none;
   pointer-events: none;
   z-index: 0;
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, black 60%, transparent 100%);
+          mask-image: linear-gradient(to bottom, black 0%, black 60%, transparent 100%);
+}
+
+.opening-bg-scrolled {
+  opacity: 0;
+  transition: opacity 600ms ease-out;
+}
+
+.spread-opening.is-scrolled .opening-bg-scrolled {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .opening-bg-scrolled {
+    display: none;
+  }
+}
+
+/* =====================================================================
+   OPENING GRID OVERLAY — design tool. Toggle with `g`. 12 cols x 8 rows
+   inside a 3% page margin, so col/row coords are stable to reason about.
+   ===================================================================== */
+
+.opening-grid {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  display: none;
+}
+
+.spread-opening.show-grid .opening-grid {
+  display: block;
+}
+
+.opening-grid .grid-margin {
+  position: absolute;
+  inset: 3%;
+  border: 1px dashed rgba(0, 255, 200, 0.55);
+}
+
+.opening-grid .grid-col,
+.opening-grid .grid-row {
+  position: absolute;
+  background: rgba(255, 60, 220, 0.45);
+}
+
+.opening-grid .grid-col {
+  top: 3%;
+  bottom: 3%;
+  width: 1px;
+}
+
+.opening-grid .grid-row {
+  left: 3%;
+  right: 3%;
+  height: 1px;
+}
+
+.opening-grid .grid-label {
+  position: absolute;
+  font-family: var(--mono);
+  font-size: 10px;
+  line-height: 1;
+  color: #fff;
+  background: rgba(255, 60, 220, 0.85);
+  padding: 2px 4px;
+  border-radius: 2px;
+  transform: translate(-50%, -50%);
+  white-space: nowrap;
+}
+
+.opening-grid .grid-label-col {
+  top: 1.6%;
+}
+
+.opening-grid .grid-label-row {
+  left: 1.6%;
+}
+
+/* Dark overlay over the image. Same mask as .opening-bg so they feather
+   together at the bottom — image + overlay both fade out, body paper
+   bleeds through where they vanish, producing a soft transparent seam
+   with V1 rather than a hard color band. */
+.spread-opening::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 1;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, black 60%, transparent 100%);
+          mask-image: linear-gradient(to bottom, black 0%, black 60%, transparent 100%);
 }
 
 .opening-title {
   position: absolute;
-  top: 8%;
-  left: 50%;
-  transform: translateX(-50%);
+  /* c2-c5, vertically centered within r2 */
+  top: calc(var(--grid-margin-y) + 1.5 * var(--row));
+  transform: translate(0, calc(-50% + 8px));
+  left: calc(var(--grid-margin-x) + 1 * var(--col));
+  max-width: calc(4 * var(--col));
   z-index: 2;
   margin: 0;
-  padding: 0 1rem;
-  text-align: center;
-  font-family: var(--serif);
-  font-style: italic;
+  padding: 0;
+  text-align: left;
+  font-family: var(--display);
+  font-style: normal;
   font-weight: 400;
-  font-size: clamp(2rem, 5.5vw, 4.25rem);
-  line-height: 1.1;
-  letter-spacing: 0.005em;
-  color: var(--ink);
-  text-shadow:
-    0 0 18px rgba(244, 239, 229, 0.55),
-    0 1px 2px rgba(244, 239, 229, 0.6);
+  font-size: var(--fs-display);
+  line-height: var(--lh-tight);
+  letter-spacing: 0.01em;
+  color: rgba(255, 252, 240, 0.88);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.18);
   white-space: nowrap;
   pointer-events: auto;
+  /* Entrance: starts faded + 8px below final, settles when .is-entered is set */
+  opacity: 0;
+  transition: opacity 700ms ease-out 200ms,
+              transform 700ms cubic-bezier(0.2, 0.7, 0.2, 1) 200ms;
 }
+
+.spread-opening.is-entered .opening-title {
+  opacity: 1;
+  transform: translate(0, -50%);
+}
+
+.opening-subtext {
+  position: absolute;
+  /* c2 / r3 */
+  top: calc(var(--grid-margin-y) + 2 * var(--row));
+  left: calc(var(--grid-margin-x) + 1 * var(--col));
+  max-width: calc(4 * var(--col));
+  z-index: 2;
+  margin: 0;
+  padding: 0;
+  font-family: var(--serif);
+  font-style: normal;
+  font-weight: 400;
+  font-size: var(--fs-body);
+  line-height: var(--lh-normal);
+  color: rgba(255, 252, 240, 0.82);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.22);
+  pointer-events: auto;
+  /* Entrance: lift + fade, staggered after the title */
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 700ms ease-out 600ms,
+              transform 700ms cubic-bezier(0.2, 0.7, 0.2, 1) 600ms;
+}
+
+.spread-opening.is-entered .opening-subtext {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .opening-title,
+  .opening-subtext {
+    opacity: 1;
+    transition: none;
+  }
+  .opening-title {
+    transform: translate(0, -50%);
+  }
+  .opening-subtext {
+    transform: translateY(0);
+  }
+}
+
+/* Title transition — per-character blur crossfade. Each glyph is wrapped
+   in `.opening-char` with a random `--delay`, so the title dissolves and
+   reassembles unevenly — like dust settling, not a clean wipe. */
 
 .opening-title-text {
   display: inline-block;
-  transition: opacity 400ms ease-out, transform 400ms ease-out;
 }
 
-.opening-title-text.is-fading {
+.opening-char {
+  display: inline-block;
+  opacity: 1;
+  filter: blur(0);
+  transition: opacity 900ms cubic-bezier(0.33, 0, 0.2, 1) var(--delay, 0ms),
+              filter  900ms cubic-bezier(0.33, 0, 0.2, 1) var(--delay, 0ms);
+  will-change: opacity, filter;
+}
+
+.opening-title-text.is-fading .opening-char {
   opacity: 0;
-  transform: translateY(-6px);
+  filter: blur(7px);
 }
 
 .opening-postcards {
@@ -706,7 +904,9 @@ figure video {
   padding: 0;
   margin: 0;
   cursor: pointer;
-  transition: border-color 220ms ease-out, box-shadow 220ms ease-out;
+  transition: border-color 300ms ease-out,
+              box-shadow 300ms ease-out,
+              transform 300ms cubic-bezier(0.2, 0.7, 0.2, 1);
   outline: none;
 }
 
@@ -714,7 +914,41 @@ figure video {
 .postcard-hotspot:focus-visible,
 .postcard-hotspot.is-active {
   border-color: var(--warm);
-  box-shadow: 0 0 0 3px rgba(232, 194, 106, 0.25);
+  box-shadow: 0 0 0 3px rgba(232, 194, 106, 0.25),
+              0 6px 18px rgba(232, 194, 106, 0.18);
+  transform: translateY(-1px);
+}
+
+/* Wake-up: after entrance, each postcard briefly glows then settles back
+   to transparent. Stagger via `--i` set in JS. Telegraphs interactivity. */
+@keyframes postcard-wake {
+  0%, 100% {
+    border-color: transparent;
+    box-shadow: 0 0 0 0 rgba(232, 194, 106, 0);
+  }
+  30%, 70% {
+    border-color: rgba(232, 194, 106, 0.65);
+    box-shadow: 0 0 0 3px rgba(232, 194, 106, 0.18);
+  }
+}
+
+.spread-opening.is-entered .postcard-hotspot {
+  animation: postcard-wake 1.4s ease-in-out;
+  animation-delay: calc(1500ms + var(--i, 0) * 130ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spread-opening.is-entered .postcard-hotspot {
+    animation: none;
+  }
+  .postcard-hotspot {
+    transition: border-color 120ms ease-out, box-shadow 120ms ease-out;
+  }
+  .postcard-hotspot:hover,
+  .postcard-hotspot:focus-visible,
+  .postcard-hotspot.is-active {
+    transform: none;
+  }
 }
 
 /* Debug helper: add class="show-hotspots" on .opening-postcards in
@@ -735,11 +969,11 @@ figure video {
   color: var(--ink);
   border: 1px solid var(--rule);
   border-radius: 4px;
-  padding: 1rem 1.125rem;
+  padding: var(--space-lg);
   box-shadow: 0 12px 32px rgba(31, 27, 22, 0.18), 0 2px 6px rgba(31, 27, 22, 0.08);
   font-family: var(--serif);
-  font-size: 0.9375rem;
-  line-height: 1.5;
+  font-size: var(--fs-ui);
+  line-height: var(--lh-normal);
   opacity: 0;
   transform: translateY(4px);
   transition: opacity 220ms ease-out, transform 220ms ease-out;
@@ -755,17 +989,17 @@ figure video {
 }
 
 .popover-name {
-  margin: 0 0 0.25rem;
-  font-size: 1.0625rem;
-  font-weight: 500;
+  margin: 0 0 var(--space-xs);
+  font-size: var(--fs-body);
+  font-weight: 700;
   font-style: italic;
   color: var(--ink);
 }
 
 .popover-meta {
-  margin: 0 0 0.625rem;
+  margin: 0 0 var(--space-sm);
   font-family: var(--sans);
-  font-size: 0.6875rem;
+  font-size: var(--fs-tag);
   font-weight: 500;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -774,8 +1008,8 @@ figure video {
 
 .popover-intro {
   margin: 0;
-  font-size: 0.9375rem;
-  line-height: 1.5;
+  font-size: var(--fs-ui);
+  line-height: var(--lh-normal);
   color: var(--ink);
 }
 
@@ -795,26 +1029,33 @@ figure video {
 /* Mobile adjustments for the opening */
 @media (max-width: 800px) {
   .opening-title {
-    top: 6%;
-    font-size: clamp(1.625rem, 7vw, 2.5rem);
+    top: 4%;
+    left: 5%;
+    font-size: var(--fs-lead);
     white-space: normal;
-    max-width: 90vw;
+    max-width: 70vw;
+  }
+
+  .opening-subtext {
+    top: 14%;
+    left: 5%;
+    max-width: 80vw;
+    font-size: var(--fs-ui);
   }
 
   .postcard-popover {
     width: 16rem;
-    font-size: 0.875rem;
   }
 }
 
 /* Reduced-motion: title doesn't transition */
 @media (prefers-reduced-motion: reduce) {
-  .opening-title-text {
+  .opening-char {
     transition: none;
   }
-  .opening-title-text.is-fading {
+  .opening-title-text.is-fading .opening-char {
     opacity: 1;
-    transform: none;
+    filter: none;
   }
   .postcard-popover {
     transition: none;

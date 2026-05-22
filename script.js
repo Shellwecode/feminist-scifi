@@ -3,7 +3,20 @@
   // DOM order matches scroll order: opening → v1 anchors → bridge-a → v2 anchors → ...
   const navTargets = Array.from(document.querySelectorAll('.spread, .page-anchor'));
   const vignettes = Array.from(document.querySelectorAll('.vignette'));
+  const opening = document.querySelector('.spread-opening');
   const isMobile = () => window.innerWidth < 800;
+
+  // ===================================================================
+  // OPENING — entrance choreography. Toggle `.is-entered` on the next
+  // paint so the CSS fade-up runs from the opacity:0 initial state.
+  // ===================================================================
+  if (opening) {
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        opening.classList.add('is-entered');
+      });
+    });
+  }
 
   // ===================================================================
   // STORYBOOK — drive horizontal translate from vertical scroll
@@ -141,35 +154,149 @@
 
   if (titleEl && titleContainer) {
     const langs = [
-      { lang: 'en',      text: 'the untold stories' },
+      { lang: 'en',      text: 'The Untold Stories' },
       { lang: 'zh-Hans', text: '未被讲述的故事' },
       { lang: 'ja',      text: '語られざる物語' },
       { lang: 'ko',      text: '들려지지 않은 이야기들' },
-      { lang: 'es',      text: 'las historias no contadas' },
-      { lang: 'fr',      text: 'les histoires non racontées' },
-      { lang: 'pt',      text: 'as histórias não contadas' },
+      { lang: 'es',      text: 'Las historias no contadas' },
+      { lang: 'fr',      text: 'Les histoires non racontées' },
+      { lang: 'pt',      text: 'As histórias não contadas' },
     ];
 
     let idx = 0;
     let paused = false;
 
+    // Each char gets its own randomized delay (0–STAGGER ms) so the title
+    // dissolves and reassembles unevenly. Single transition duration is in
+    // CSS (`.opening-char`).
+    const STAGGER = 450;
+    const TRANSITION = 900;
+
+    function buildChars(text, lang) {
+      titleEl.setAttribute('lang', lang);
+      titleEl.innerHTML = '';
+      const fragment = document.createDocumentFragment();
+      for (const ch of text) {  /* iterates Unicode code points correctly */
+        const span = document.createElement('span');
+        span.className = 'opening-char';
+        span.style.setProperty('--delay', `${Math.random() * STAGGER | 0}ms`);
+        span.textContent = ch === ' ' ? ' ' : ch;
+        fragment.appendChild(span);
+      }
+      titleEl.appendChild(fragment);
+    }
+
+    // Initial render: wrap the existing English string in per-char spans.
+    buildChars(langs[idx].text, langs[idx].lang);
+
     function advanceTitle() {
       if (paused || prefersReduce) return;
       idx = (idx + 1) % langs.length;
       const { lang, text } = langs[idx];
+
+      // Phase 1 — fade out (each char on its own delay).
       titleEl.classList.add('is-fading');
+
+      // Phase 2 — once the slowest char has finished fading, swap in the
+      // new text (built with fresh random delays) and lift the fade class
+      // so the new chars transition back to visible.
       setTimeout(() => {
-        titleEl.textContent = text;
-        titleEl.setAttribute('lang', lang);
+        buildChars(text, lang);
+        void titleEl.offsetHeight;  /* commit the new chars before un-fading */
         titleEl.classList.remove('is-fading');
-      }, 400);
+      }, STAGGER + TRANSITION);
     }
 
     if (!prefersReduce) {
-      setInterval(advanceTitle, 2500);
+      setInterval(advanceTitle, 4500);
       titleContainer.addEventListener('mouseenter', () => { paused = true; });
       titleContainer.addEventListener('mouseleave', () => { paused = false; });
     }
+  }
+
+  // ===================================================================
+  // OPENING — peel-away transition when the visitor starts scrolling
+  // ===================================================================
+
+  const scrolledVideo = opening?.querySelector('.opening-bg-scrolled');
+
+  if (opening && scrolledVideo && !prefersReduce) {
+    let isScrolled = false;
+
+    function updateOpeningState() {
+      const past = window.scrollY > opening.offsetHeight * 0.1;
+      if (past && !isScrolled) {
+        isScrolled = true;
+        opening.classList.add('is-scrolled');
+        scrolledVideo.currentTime = 0;
+        const p = scrolledVideo.play();
+        if (p && p.catch) p.catch(() => {});
+      } else if (!past && isScrolled) {
+        isScrolled = false;
+        opening.classList.remove('is-scrolled');
+        scrolledVideo.pause();
+        scrolledVideo.currentTime = 0;
+      }
+    }
+
+    window.addEventListener('scroll', updateOpeningState, { passive: true });
+  }
+
+  // ===================================================================
+  // OPENING GRID OVERLAY — design tool. Press `g` to toggle.
+  // 12 cols x 8 rows inside a 3% page margin.
+  // ===================================================================
+
+  const gridHost = document.querySelector('.opening-grid');
+
+  if (opening && gridHost) {
+    const COLS = 12;
+    const ROWS = 8;
+
+    // Inner lines (1..COLS-1) and the framing 0 / COLS lines are drawn
+    // by the .grid-margin dashed border instead, to keep counts clean.
+    for (let i = 1; i < COLS; i++) {
+      const line = document.createElement('div');
+      line.className = 'grid-col';
+      line.style.left = `calc(3% + ${(i / COLS) * 94}vw)`;
+      gridHost.appendChild(line);
+    }
+    for (let i = 1; i < ROWS; i++) {
+      const line = document.createElement('div');
+      line.className = 'grid-row';
+      line.style.top = `calc(3% + ${(i / ROWS) * 94}vh)`;
+      gridHost.appendChild(line);
+    }
+    // Column labels along the top — centered on each column
+    for (let i = 1; i <= COLS; i++) {
+      const label = document.createElement('div');
+      label.className = 'grid-label grid-label-col';
+      label.style.left = `calc(3% + ${((i - 0.5) / COLS) * 94}vw)`;
+      label.textContent = `c${i}`;
+      gridHost.appendChild(label);
+    }
+    // Row labels along the left — centered on each row
+    for (let i = 1; i <= ROWS; i++) {
+      const label = document.createElement('div');
+      label.className = 'grid-label grid-label-row';
+      label.style.top = `calc(3% + ${((i - 0.5) / ROWS) * 94}vh)`;
+      label.textContent = `r${i}`;
+      gridHost.appendChild(label);
+    }
+    // The 3% margin frame
+    const margin = document.createElement('div');
+    margin.className = 'grid-margin';
+    gridHost.insertBefore(margin, gridHost.firstChild);
+
+    document.addEventListener('keydown', (e) => {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      const target = e.target;
+      const tag = (target.tagName || '').toLowerCase();
+      if (tag === 'input' || tag === 'textarea' || target.isContentEditable) return;
+      if (e.key === 'g' || e.key === 'G') {
+        opening.classList.toggle('show-grid');
+      }
+    });
   }
 
   // ===================================================================
@@ -179,6 +306,11 @@
 
   const hotspots = Array.from(document.querySelectorAll('.postcard-hotspot'));
   const postcardContainer = document.querySelector('.opening-postcards');
+
+  // Stagger index for the post-entrance wake-up animation
+  hotspots.forEach((hotspot, i) => {
+    hotspot.style.setProperty('--i', i);
+  });
 
   if (hotspots.length > 0 && postcardContainer) {
     const hideTimers = new Map();

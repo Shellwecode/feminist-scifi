@@ -6,7 +6,7 @@
 <title>begins with what got overlooked</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,500;1,400;1,500&family=Inter:wght@500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Display&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Public+Sans:wght@400;500;600&family=JetBrains+Mono&family=Noto+Serif+TC:wght@400;500&family=Noto+Serif+SC:wght@400;500&family=Noto+Serif+JP:wght@400;500&family=Noto+Serif+KR:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -16,11 +16,19 @@
        OPENING
        ============================================================ -->
   <section class="spread spread-opening" id="s-opening" tabindex="-1">
-    <img class="opening-bg" src="images/open-1.png" alt="A young woman sitting at a desk lit by a lamp, the wall behind her covered in postcards of women science fiction writers across many traditions.">
+    <img class="opening-bg opening-bg-idle" src="images/open-1.png" alt="A young woman sitting at a desk lit by a lamp, the wall behind her covered in postcards of women science fiction writers across many traditions.">
+    <video class="opening-bg opening-bg-scrolled"
+           src="images/open-scrolled.mp4"
+           muted playsinline preload="metadata"
+           aria-hidden="true"></video>
+
+    <div class="opening-grid" aria-hidden="true"></div>
 
     <h1 class="opening-title">
-      <span class="opening-title-text" lang="en">the untold stories</span>
+      <span class="opening-title-text" lang="en">The Untold Stories</span>
     </h1>
+
+    <p class="opening-subtext">I made this site for my own curiosity. I want to read more of the feminist science fiction I'd been missing, across decades and languages. The wall is where I'm starting.</p>
 
     <div class="opening-postcards">
       <!-- Hotspot positions are starting estimates over open-1.png; refine

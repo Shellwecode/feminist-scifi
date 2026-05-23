@@ -690,8 +690,6 @@ figure video {
   -webkit-user-drag: none;
   pointer-events: none;
   z-index: 0;
-  -webkit-mask-image: linear-gradient(to bottom, black 0%, black 75%, transparent 100%);
-          mask-image: linear-gradient(to bottom, black 0%, black 75%, transparent 100%);
   /* Depth-of-field: image fades and blurs as the visitor scrolls past
      the opening. --opening-scroll-progress is set by script.js (0→1). */
   opacity: calc(1 - var(--opening-scroll-progress, 0) * 0.65);
@@ -776,11 +774,8 @@ figure video {
   left: 1.6%;
 }
 
-/* Dark overlay over the image. Same mask as .opening-bg so they feather
-   together at the bottom — image + overlay both fade out, body paper
-   bleeds through where they vanish, producing a soft transparent seam
-   with V1 rather than a hard color band. Also fades with scroll progress
-   so the overlay recedes with the image. */
+/* Dark overlay over the image. Recedes with scroll progress so the
+   overlay fades along with the image as the visitor scrolls into V1. */
 .spread-opening::before {
   content: '';
   position: absolute;
@@ -788,9 +783,29 @@ figure video {
   background: rgba(0, 0, 0, 0.4);
   z-index: 1;
   pointer-events: none;
-  -webkit-mask-image: linear-gradient(to bottom, black 0%, black 75%, transparent 100%);
-          mask-image: linear-gradient(to bottom, black 0%, black 75%, transparent 100%);
   opacity: calc(1 - var(--opening-scroll-progress, 0) * 0.7);
+}
+
+/* Quiet seam — a soft deepening of the existing dark tones at the very
+   bottom of the opening, reading as a shelf-shadow / page-edge rather
+   than introducing a bright wash. No new color, just gentle darkening. */
+.spread-opening::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 28%;
+  background: linear-gradient(
+    to bottom,
+    rgba(16, 15, 15, 0)    0%,
+    rgba(16, 15, 15, 0.08) 60%,
+    rgba(16, 15, 15, 0.22) 100%
+  );
+  z-index: 2;
+  pointer-events: none;
+  /* Fades with scroll so it doesn't darken what's receding. */
+  opacity: calc(1 - var(--opening-scroll-progress, 0) * 0.8);
 }
 
 .opening-title {
@@ -821,6 +836,12 @@ figure video {
   /* Scroll recede — multiplies with the entrance opacity. */
   filter: opacity(calc(1 - var(--opening-scroll-progress, 0) * 0.7))
           blur(calc(var(--opening-scroll-progress, 0) * 1.5px));
+  /* Sticky-on-scroll — moves 1:1 with the scroll so the title stays at
+     the same viewport Y while the opening passes underneath. The CSS
+     `translate` property composes with `transform` (used for entrance +
+     vertical centering), so the entrance choreography is unaffected.
+     overflow:hidden on .spread-opening clips at the V1 seam naturally. */
+  translate: 0 max(0vh, calc((var(--opening-scroll-raw, 0) - 0.12) * 100vh));
 }
 
 .spread-opening.is-entered .opening-title {
@@ -853,6 +874,8 @@ figure video {
   /* Scroll recede — multiplies with the entrance opacity. */
   filter: opacity(calc(1 - var(--opening-scroll-progress, 0) * 0.7))
           blur(calc(var(--opening-scroll-progress, 0) * 1.5px));
+  /* Sticky-on-scroll — see .opening-title for the rationale. */
+  translate: 0 max(0vh, calc((var(--opening-scroll-raw, 0) - 0.12) * 100vh));
 }
 
 .spread-opening.is-entered .opening-subtext {
@@ -896,9 +919,20 @@ figure video {
   filter: blur(7px);
 }
 
+/* Sized + centered to mirror what `object-fit: cover` does to the bg image,
+   so hotspots positioned in % of this container track points on the
+   artwork rather than the viewport. open-1.png is 2912x1632 → 1.785.
+   On a wider-than-artwork viewport: container fills width, overflows
+   top/bottom (matches cover crop). On a narrower viewport: container
+   fills height, overflows left/right. */
 .opening-postcards {
+  --image-ratio: 1.785;
   position: absolute;
-  inset: 0;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: max(100vw, calc(100vh * var(--image-ratio)));
+  height: max(100vh, calc(100vw / var(--image-ratio)));
   z-index: 1;
   pointer-events: none;
 }
@@ -909,108 +943,357 @@ figure video {
   pointer-events: auto;
 }
 
+/* The hotspot rectangle is invisible but kept large for a forgiving hit
+   area. The visible affordance is a small "pushpin" dot rendered as ::after
+   in the center, lit by a warm halo. */
 .postcard-hotspot {
   position: absolute;
   background: transparent;
-  border: 1.5px solid transparent;
-  border-radius: 2px;
+  border: none;
   padding: 0;
   margin: 0;
   cursor: pointer;
-  transition: border-color 300ms ease-out,
-              box-shadow 300ms ease-out,
-              transform 300ms cubic-bezier(0.2, 0.7, 0.2, 1);
   outline: none;
+  /* --postcard-tilt is consumed by .postcard-popover.is-focused only.
+     The dot is a circle, so we don't tilt the hotspot itself. */
 }
 
-.postcard-hotspot:hover,
-.postcard-hotspot:focus-visible,
-.postcard-hotspot.is-active {
-  border-color: var(--warm);
-  box-shadow: 0 0 0 3px rgba(232, 194, 106, 0.25),
-              0 6px 18px rgba(232, 194, 106, 0.18);
-  transform: translateY(-1px);
+/* Affordance: brighten-from-within. Three stacked radial gradients at
+   different falloff radii compose a silky, multi-hue aura — cream core
+   → peach mid → coral/lavender edge. A light blur softens any banding
+   between stops so transitions feel continuous.
+
+   Size is RELATIVE to the hotspot (var(--glow-scale)), so each glow is
+   tailored per card. Per-card --glow-scale, --glow-peak, --breath-*
+   are computed in JS from distance-to-lamp + small noise. */
+.postcard-hotspot::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width:  var(--glow-scale, 200%);
+  height: var(--glow-scale, 200%);
+  /* Center via translate, then apply per-card ellipse aspect + rotation
+     (variables set in JS). The trailing scale on :hover composes on top. */
+  transform: translate(-50%, -50%)
+             scale(var(--glow-aspect-x, 1), var(--glow-aspect-y, 1))
+             rotate(var(--glow-rotate, 0deg));
+  border-radius: 50%;
+  /* Paper catching the lamp's light — much dimmer than the lamp itself.
+     Opacities are roughly half what they were so the lamp stays the
+     scene's primary light source. */
+  background:
+    /* Core — soft cream (paper's warmth) */
+    radial-gradient(circle at center,
+      rgba(255, 238, 200, 0.40) 0%,
+      rgba(255, 220, 175, 0.24) 16%,
+      transparent 38%
+    ),
+    /* Warm mid — peach */
+    radial-gradient(circle at center,
+      rgba(248, 198, 155, 0.18) 0%,
+      rgba(238, 175, 150, 0.11) 38%,
+      transparent 62%
+    ),
+    /* Outer wash — coral → lavender */
+    radial-gradient(circle at center,
+      rgba(225, 175, 185, 0.09) 0%,
+      rgba(205, 180, 215, 0.06) 48%,
+      rgba(180, 185, 220, 0.03) 70%,
+      transparent 88%
+    );
+  filter: blur(2px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 500ms ease-out,
+              transform 500ms cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
-/* Wake-up: after entrance, each postcard briefly glows then settles back
-   to transparent. Stagger via `--i` set in JS. Telegraphs interactivity. */
-@keyframes postcard-wake {
-  0%, 100% {
-    border-color: transparent;
-    box-shadow: 0 0 0 0 rgba(232, 194, 106, 0);
-  }
-  30%, 70% {
-    border-color: rgba(232, 194, 106, 0.65);
-    box-shadow: 0 0 0 3px rgba(232, 194, 106, 0.18);
-  }
+/* !important needed on opacity because the infinite `light-breathe`
+   animation would otherwise outrank the :hover rule. Transform is fine
+   because the wake-up holds at scale 1 via `forwards`, and breathing
+   doesn't animate transform — only opacity. */
+.postcard-hotspot:hover::after,
+.postcard-hotspot:focus-visible::after,
+.postcard-hotspot.is-active::after {
+  opacity: 1 !important;
+  /* Same per-card ellipse + tilt, plus a 1.18x uniform bump for hover. */
+  transform: translate(-50%, -50%)
+             scale(var(--glow-aspect-x, 1), var(--glow-aspect-y, 1))
+             rotate(var(--glow-rotate, 0deg))
+             scale(1.18);
 }
 
-.spread-opening.is-entered .postcard-hotspot {
-  animation: postcard-wake 1.4s ease-in-out;
-  animation-delay: calc(1500ms + var(--i, 0) * 130ms);
+/* Wake-up pulses once: 0 → peak → 0. Ends at 0 so the breathing
+   animation can take over without a flicker. */
+@keyframes light-wake {
+  0%   { opacity: 0; }
+  40%  { opacity: var(--glow-peak, 0.5); }
+  100% { opacity: 0; }
+}
+
+/* Breathing: fades fully out and back in. Each card has its own
+   duration + phase (set in JS), so at any moment some glows are at
+   peak, some mid-fade, some dark — like flickering lamplight catching
+   different papers at different moments. */
+@keyframes light-breathe {
+  0%, 100% { opacity: 0; }
+  50%      { opacity: var(--glow-peak, 0.5); }
+}
+
+.spread-opening.is-entered .postcard-hotspot::after {
+  animation-name: light-wake, light-breathe;
+  animation-duration: 1.6s, var(--breath-duration, 6s);
+  animation-timing-function: cubic-bezier(0.2, 0.7, 0.2, 1), ease-in-out;
+  animation-delay: calc(1500ms + var(--i, 0) * 130ms),
+                   calc(4500ms + var(--breath-phase, 0s));
+  animation-fill-mode: forwards, none;
+  animation-iteration-count: 1, infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .spread-opening.is-entered .postcard-hotspot {
+  .postcard-hotspot::after,
+  .spread-opening.is-entered .postcard-hotspot::after {
     animation: none;
+    transition: opacity 120ms ease-out;
   }
-  .postcard-hotspot {
-    transition: border-color 120ms ease-out, box-shadow 120ms ease-out;
-  }
-  .postcard-hotspot:hover,
-  .postcard-hotspot:focus-visible,
-  .postcard-hotspot.is-active {
-    transform: none;
-  }
+  .spread-opening.is-entered .postcard-hotspot::after { opacity: var(--glow-peak, 0.5); }
 }
 
 /* Debug helper: add class="show-hotspots" on .opening-postcards in
    devtools to make all hotspots visible while refining positions */
 .opening-postcards.show-hotspots .postcard-hotspot {
-  border-color: rgba(232, 194, 106, 0.8);
-  background: rgba(232, 194, 106, 0.15);
+  outline: 1px dashed rgba(232, 194, 106, 0.5);
 }
+
+/* Postcard grid — artwork-anchored (lives inside .opening-postcards
+   which is sized to the drawing's aspect ratio). 12 cols x 8 rows, no
+   inner margin: cols/rows span the full artwork directly. Toggle with
+   `p`. Cyan to distinguish from the viewport grid (magenta, `g`). */
+.opening-postcards-grid {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  display: none;
+}
+
+.opening-postcards.show-pc-grid .opening-postcards-grid {
+  display: block;
+}
+
+.opening-postcards-grid .pcg-col,
+.opening-postcards-grid .pcg-row {
+  position: absolute;
+  background: rgba(80, 200, 255, 0.55);
+}
+
+.opening-postcards-grid .pcg-col {
+  top: 0;
+  bottom: 0;
+  width: 1px;
+}
+
+.opening-postcards-grid .pcg-row {
+  left: 0;
+  right: 0;
+  height: 1px;
+}
+
+.opening-postcards-grid .pcg-label {
+  position: absolute;
+  font-family: var(--mono);
+  font-size: 10px;
+  line-height: 1;
+  color: #fff;
+  background: rgba(80, 200, 255, 0.9);
+  padding: 2px 4px;
+  border-radius: 2px;
+  transform: translate(-50%, -50%);
+  white-space: nowrap;
+}
+
+.opening-postcards-grid .pcg-label-col { top: 12px; }
+.opening-postcards-grid .pcg-label-row { left: 12px; }
+
+/* Dust motes — added in JS to the 3 postcards closest to the lamp.
+   Tiny warm specks that drift slowly upward, fade in and out on
+   independent timings so they never read as a synchronized effect.
+   z-index lifts them above the ::after glow so they appear *in* the
+   light, not behind it. */
+.dust-mote {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width:  var(--mote-size, 2px);
+  height: var(--mote-size, 2px);
+  border-radius: 50%;
+  background: rgba(255, 240, 195, 0.85);
+  box-shadow: 0 0 3px 1px rgba(255, 228, 180, 0.4);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 1;
+  transform: translate(-50%, -50%)
+             translate(var(--mote-x0, 0), var(--mote-y0, 0));
+  animation: dust-drift var(--mote-duration, 6s)
+             ease-in-out var(--mote-delay, 0s) infinite;
+}
+
+@keyframes dust-drift {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%)
+               translate(var(--mote-x0, 0), var(--mote-y0, 0));
+  }
+  20%, 80% { opacity: 0.7; }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%)
+               translate(var(--mote-x1, 0), var(--mote-y1, 0));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dust-mote {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+/* Two states, mutually exclusive:
+   .is-preview — small label on hover (name + place/year only)
+   .is-focused — full postcard on click (also shows .popover-intro) */
 
 .postcard-popover {
   position: absolute;
   top: 0;
   left: 0;
   z-index: 5;
-  width: 18rem;
-  max-width: calc(100vw - 2rem);
-  background: var(--paper);
   color: var(--ink);
-  border: 1px solid var(--rule);
-  border-radius: 4px;
-  padding: var(--space-lg);
-  box-shadow: 0 12px 32px rgba(31, 27, 22, 0.18), 0 2px 6px rgba(31, 27, 22, 0.08);
   font-family: var(--serif);
-  font-size: var(--fs-ui);
   line-height: var(--lh-normal);
-  opacity: 0;
-  transform: translateY(4px);
-  transition: opacity 220ms ease-out, transform 220ms ease-out;
   pointer-events: none;
   visibility: hidden;
+  opacity: 0;
+  transform-origin: center top;
+  /* width + padding intentionally NOT transitioned: they change per
+     state (preview vs focused) and we need offsetWidth to reflect the
+     target size immediately so positionPopover measures correctly. */
+  transition: opacity 320ms cubic-bezier(0.2, 0.7, 0.2, 1),
+              transform 380ms cubic-bezier(0.2, 0.7, 0.2, 1),
+              box-shadow 380ms ease-out;
 }
 
-.postcard-popover.is-visible {
+/* Preview — frosted glass label that floats above the wall. Translucent
+   paper background + backdrop blur so whatever is behind shows through
+   softly. Hairline white-paper border + a quiet inset highlight on top
+   read as a refracted glass edge. */
+.postcard-popover.is-preview {
+  width: auto;
+  max-width: 17rem;
+  padding: var(--space-md) var(--space-lg);
+  background: rgba(255, 252, 240, 0.42);
+  -webkit-backdrop-filter: blur(20px) saturate(1.2);
+          backdrop-filter: blur(20px) saturate(1.2);
+  border: 1px solid rgba(255, 252, 240, 0.35);
+  border-radius: 10px;
+  box-shadow:
+    0 10px 28px rgba(16, 15, 15, 0.22),
+    0 2px 6px rgba(16, 15, 15, 0.10);
+  font-size: var(--fs-ui);
   opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
   visibility: visible;
+  transform: translateY(0) scale(1);
 }
+
+.postcard-popover.is-preview .popover-name {
+  margin: 0;
+  font-style: italic;
+}
+
+.postcard-popover.is-preview .popover-meta {
+  margin: 2px 0 0;
+}
+
+.postcard-popover.is-preview .popover-intro {
+  display: none;
+}
+
+/* Focused — opened glass card. Quieter, lighter, more translucent than
+   before: less opaque paper, softer shadow, no tilt. On open, a
+   `focus-expand` animation runs (scale 0.88 → 1 with the fade-in) so
+   the card *unfolds into place* rather than popping. */
+.postcard-popover.is-focused {
+  width: 24rem;
+  max-width: calc(100vw - 3rem);
+  padding: var(--space-xl);
+  background: rgba(255, 252, 240, 0.46);
+  -webkit-backdrop-filter: blur(30px) saturate(1.15);
+          backdrop-filter: blur(30px) saturate(1.15);
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  border-radius: 14px;
+  box-shadow:
+    0 14px 36px rgba(16, 15, 15, 0.13),
+    0 2px 6px rgba(16, 15, 15, 0.06),
+    0 1px 0 rgba(255, 255, 255, 0.45) inset;
+  font-size: var(--fs-ui);
+  opacity: 1;
+  visibility: visible;
+  transform: scale(1);
+  pointer-events: auto;
+  animation: focus-expand 760ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Soft + quiet: longer duration (760ms), expo-out easing for a long
+   gentle tail, small scale delta (3% growth instead of 12%), and a
+   tiny upward drift so the card settles into place rather than pops
+   into existence. */
+@keyframes focus-expand {
+  0%   { opacity: 0; transform: scale(0.97) translateY(6px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .postcard-popover.is-focused { animation: none; }
+}
+
+/* Warm-graphite glass variant — toggle with `d` for A/B against light.
+   Uses a sepia-tinted dark instead of pure ink, so the card stays inside
+   the doodle's warm palette while giving the cream text strong contrast.
+   Reads as ink-stained paper rather than a UI panel. */
+body.cards-dark .postcard-popover.is-preview {
+  background: rgba(54, 42, 24, 0.50);
+  border: 1px solid rgba(255, 248, 225, 0.14);
+  box-shadow:
+    0 10px 28px rgba(30, 20, 10, 0.28),
+    0 2px 6px rgba(30, 20, 10, 0.13);
+}
+
+body.cards-dark .postcard-popover.is-focused {
+  background: rgba(54, 42, 24, 0.44);
+  border: 1px solid rgba(255, 248, 225, 0.16);
+  box-shadow:
+    0 14px 36px rgba(30, 20, 10, 0.32),
+    0 2px 6px rgba(30, 20, 10, 0.13),
+    0 1px 0 rgba(255, 248, 225, 0.10) inset;
+}
+
+body.cards-dark .postcard-popover .popover-name  { color: rgba(255, 250, 230, 0.96); }
+body.cards-dark .postcard-popover .popover-meta  { color: rgba(255, 250, 230, 0.62); }
+body.cards-dark .postcard-popover .popover-intro { color: rgba(255, 250, 230, 0.88); }
 
 .popover-name {
   margin: 0 0 var(--space-xs);
-  font-size: var(--fs-body);
-  font-weight: 700;
-  font-style: italic;
+  font-family: var(--display);
+  font-size: var(--fs-ui);
+  font-weight: 400;
+  font-style: normal;
   color: var(--ink);
+  letter-spacing: 0.005em;
 }
 
 .popover-meta {
-  margin: 0 0 var(--space-sm);
+  margin: 0 0 var(--space-md);
   font-family: var(--sans);
   font-size: var(--fs-tag);
   font-weight: 500;
@@ -1021,7 +1304,7 @@ figure video {
 
 .popover-intro {
   margin: 0;
-  font-size: var(--fs-ui);
+  font-size: var(--fs-meta);
   line-height: var(--lh-normal);
   color: var(--ink);
 }
@@ -1056,8 +1339,9 @@ figure video {
     font-size: var(--fs-ui);
   }
 
-  .postcard-popover {
-    width: 16rem;
+  .postcard-popover.is-focused {
+    width: calc(100vw - 3rem);
+    max-width: 22rem;
   }
 }
 

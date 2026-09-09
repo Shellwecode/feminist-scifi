@@ -3,14 +3,31 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>begins with what got overlooked</title>
+<meta name="description" content="A narrative museum of women’s science fiction beyond the Anglophone canon — and the systems that decided who was heard.">
+<meta name="theme-color" content="#FFFCF0">
+<title>The Untold Stories — a feminist science-fiction museum</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Display&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Public+Sans:wght@400;500;600&family=JetBrains+Mono&family=Noto+Serif+TC:wght@400;500&family=Noto+Serif+SC:wght@400;500&family=Noto+Serif+JP:wght@400;500&family=Noto+Serif+KR:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<main>
+<a class="skip-link" href="#main-content">Skip to the story</a>
+
+<header class="site-chrome" data-site-chrome>
+  <a class="site-wordmark" href="#s-opening" aria-label="The Untold Stories — return to the beginning">
+    <span class="site-wordmark-mark" aria-hidden="true">TS</span>
+    <span>The Untold Stories</span>
+  </a>
+  <nav class="site-nav" aria-label="Primary navigation">
+    <a href="#s-opening">Story</a>
+    <a href="archive.html">Archive</a>
+    <button class="site-nav-button" type="button" data-guide-open aria-haspopup="dialog" aria-controls="reading-guide">Guide</button>
+  </nav>
+  <div class="site-progress" aria-hidden="true"><span data-progress-bar></span></div>
+</header>
+
+<main id="main-content" tabindex="-1">
 
   <!-- ============================================================
        OPENING
@@ -29,6 +46,25 @@
     </h1>
 
     <p class="opening-subtext">I made this site for my own curiosity. I want to read more of the feminist science fiction I'd been missing, across decades and languages.</p>
+
+    <a class="opening-cta" href="#s-v1-1">
+      <span>Begin with Zhang Xiaofeng</span>
+      <span aria-hidden="true">↓</span>
+    </a>
+
+    <details class="opening-index">
+      <summary>Meet the writers in this room</summary>
+      <ul>
+        <li><a href="archive.html?search=Zhang%20Xiaofeng">Zhang Xiaofeng</a></li>
+        <li><a href="archive.html?search=Xia%20Jia">Xia Jia</a></li>
+        <li><a href="archive.html?search=Hao%20Jingfang">Hao Jingfang</a></li>
+        <li><a href="archive.html?search=Bora%20Chung">Bora Chung</a></li>
+        <li><a href="archive.html?search=Karin%20Boye">Karin Boye</a></li>
+        <li><a href="archive.html?search=Marlen%20Haushofer">Marlen Haushofer</a></li>
+        <li><a href="archive.html?search=L%C3%A9onora%20Miano">Léonora Miano</a></li>
+        <li><a href="archive.html?search=Misha%20Nogha">Misha (Misha Nogha)</a></li>
+      </ul>
+    </details>
 
     <div class="opening-postcards">
       <!-- Hotspot positions are starting estimates over open-1.png; refine
@@ -168,9 +204,9 @@
             </div>
           </div>
           <figure class="spread-figure">
-            <div class="placeholder placeholder-have" data-aspect="landscape">
-              <span class="placeholder-subject">Pandora bookshelf, labeled</span>
-              <span class="placeholder-tag">have · v1.2</span>
+            <div class="placeholder placeholder-study" data-aspect="landscape">
+              <span class="placeholder-subject">A shelf where <em>Pandora</em> waits to be re-filed</span>
+              <span class="placeholder-tag">Archive study · V1.2</span>
             </div>
           </figure>
         </article>
@@ -184,8 +220,8 @@
           </div>
           <figure class="spread-figure">
             <div class="placeholder" data-aspect="portrait">
-              <span class="placeholder-subject">Empty chair with an open book on a table</span>
-              <span class="placeholder-tag">TODO · v1.3</span>
+              <span class="placeholder-subject">An empty chair, an open book, a category not yet built</span>
+              <span class="placeholder-tag">Archive study · V1.3</span>
             </div>
           </figure>
         </article>
@@ -313,9 +349,9 @@
             </div>
           </div>
           <figure class="spread-figure">
-            <div class="placeholder placeholder-have" data-aspect="portrait">
-              <span class="placeholder-subject">Woman writing at a desk, warm light</span>
-              <span class="placeholder-tag">have · v2.1</span>
+            <div class="placeholder placeholder-study" data-aspect="portrait">
+              <span class="placeholder-subject">A reader writing toward a language she has not met yet</span>
+              <span class="placeholder-tag">Archive study · V2.1</span>
             </div>
           </figure>
         </article>
@@ -328,9 +364,9 @@
             </div>
           </div>
           <figure class="spread-figure">
-            <div class="placeholder placeholder-have" data-aspect="portrait">
-              <span class="placeholder-subject">Woman cross-legged with a book</span>
-              <span class="placeholder-tag">have · v2.2</span>
+            <div class="placeholder placeholder-study" data-aspect="portrait">
+              <span class="placeholder-subject">One story held between two reading lives</span>
+              <span class="placeholder-tag">Archive study · V2.2</span>
             </div>
           </figure>
         </article>
@@ -344,8 +380,8 @@
           </div>
           <figure class="spread-figure">
             <div class="placeholder" data-aspect="landscape">
-              <span class="placeholder-subject">Two books side by side — Chinese and English editions</span>
-              <span class="placeholder-tag">TODO · v2.3</span>
+              <span class="placeholder-subject">Original and translation, side by side</span>
+              <span class="placeholder-tag">Archive study · V2.3</span>
             </div>
           </figure>
         </article>
@@ -461,8 +497,8 @@
           </div>
           <figure class="spread-figure">
             <div class="placeholder" data-aspect="portrait">
-              <span class="placeholder-subject">A bowl of porridge — soft, undefined edges</span>
-              <span class="placeholder-tag">TODO · v3.1</span>
+              <span class="placeholder-subject">Porridge SF: a form with soft, undecided edges</span>
+              <span class="placeholder-tag">Archive study · V3.1</span>
             </div>
           </figure>
         </article>
@@ -477,8 +513,8 @@
           </div>
           <figure class="spread-figure">
             <div class="placeholder" data-aspect="portrait">
-              <span class="placeholder-subject">A hand drawing a line / a filing cabinet drawer</span>
-              <span class="placeholder-tag">TODO · v3.2</span>
+              <span class="placeholder-subject">A hand draws a line; a drawer decides where it lands</span>
+              <span class="placeholder-tag">Archive study · V3.2</span>
             </div>
           </figure>
         </article>
@@ -504,7 +540,7 @@
     <figure class="spread-figure">
       <div class="placeholder placeholder-case" data-aspect="case">
         <span class="placeholder-case-label">Hong Kong feminist SF</span>
-        <span class="placeholder-tag">TODO · empty case 1</span>
+        <span class="placeholder-tag">Documented absence · case 1</span>
       </div>
     </figure>
     <div class="spread-prose">
@@ -520,7 +556,7 @@
     <figure class="spread-figure">
       <div class="placeholder placeholder-case" data-aspect="case">
         <span class="placeholder-case-label">晋江</span>
-        <span class="placeholder-tag">TODO · empty case 2</span>
+        <span class="placeholder-tag">Documented absence · case 2</span>
       </div>
     </figure>
     <div class="spread-prose">
@@ -536,7 +572,7 @@
     <figure class="spread-figure">
       <div class="placeholder placeholder-case" data-aspect="case">
         <span class="placeholder-case-label">杨潇 · 杨枫 · 姬少亭 · 程婧波</span>
-        <span class="placeholder-tag">TODO · empty case 3</span>
+        <span class="placeholder-tag">Documented absence · case 3</span>
       </div>
     </figure>
     <div class="spread-prose">
@@ -552,7 +588,7 @@
     <figure class="spread-figure">
       <div class="placeholder placeholder-case" data-aspect="case">
         <span class="placeholder-case-label">The next decade</span>
-        <span class="placeholder-tag">TODO · empty case 4</span>
+        <span class="placeholder-tag">Documented absence · case 4</span>
       </div>
     </figure>
     <div class="spread-prose">
@@ -565,7 +601,51 @@
     </div>
   </section>
 
+  <section class="archive-coda" id="archive-note" aria-labelledby="archive-coda-title">
+    <div class="archive-coda-copy">
+      <p class="plaque">Catalog note</p>
+      <h2 id="archive-coda-title">The story is one route through a larger collection.</h2>
+      <p>This museum follows a few crossings: writers filed elsewhere, translators who open a door, and genre lines that decide who gets seen. The research archive keeps the wider record — 76 author files, their source trails, and the gaps that still need work.</p>
+      <div class="archive-coda-actions">
+        <a class="text-link text-link--primary" href="archive.html">Browse the research archive <span aria-hidden="true">→</span></a>
+        <a class="text-link" href="https://github.com/Shellwecode/feminist-scifi" target="_blank" rel="noreferrer">See the project on GitHub <span class="visually-hidden">(opens in a new tab)</span><span aria-hidden="true">↗</span></a>
+      </div>
+    </div>
+    <figure class="archive-coda-figure">
+      <img src="images/open-2.png" alt="A hand-drawn reader at a desk under a lamp, looking toward a wall of small portrait cards.">
+      <figcaption>Every archive starts as a way of paying attention.</figcaption>
+    </figure>
+  </section>
 </main>
+
+<footer class="site-footer">
+  <p><span aria-hidden="true">✦</span> The Untold Stories <span aria-hidden="true">✦</span></p>
+  <a href="#s-opening">Return to the first room <span aria-hidden="true">↑</span></a>
+</footer>
+
+<dialog class="reading-guide" id="reading-guide" aria-labelledby="reading-guide-title">
+  <div class="reading-guide-inner">
+    <form method="dialog" class="reading-guide-close-wrap">
+      <button class="reading-guide-close" type="submit" aria-label="Close guide">×</button>
+    </form>
+    <p class="plaque">Visitor guide</p>
+    <h2 id="reading-guide-title">A small museum about what gets overlooked.</h2>
+    <p class="reading-guide-lede">Follow the story in order, jump to a room, or move through the collection with the keyboard.</p>
+    <ol class="guide-stops">
+      <li><a href="#s-v1-1"><span>01</span> The essayist who wrote <em>Pandora</em></a></li>
+      <li><a href="#s-bridge-a-intro"><span>02</span> Stories filed elsewhere</a></li>
+      <li><a href="#s-v2-1"><span>03</span> Whose hand is on the gate?</a></li>
+      <li><a href="#s-bridge-b-intro"><span>04</span> How traditions enter English</a></li>
+      <li><a href="#s-v3-1"><span>05</span> Who draws the genre line?</a></li>
+      <li><a href="#s-closing-intro"><span>06</span> Absence as answer</a></li>
+    </ol>
+    <aside class="guide-aside">
+      <h3>Ways to read</h3>
+      <p>Hover or focus the postcards in the first room. Use <kbd>←</kbd> and <kbd>→</kbd> to move between spreads; <kbd>Home</kbd> and <kbd>End</kbd> jump to the beginning and end.</p>
+    </aside>
+    <a class="text-link text-link--primary" href="archive.html">Open the research archive <span aria-hidden="true">→</span></a>
+  </div>
+</dialog>
 <script src="script.js" defer></script>
 </body>
 </html>

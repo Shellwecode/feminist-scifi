@@ -1,14 +1,74 @@
 (() => {
-  // Nav targets: top-level .spread sections AND page-anchors inside vignettes.
-  // DOM order matches scroll order: opening → v1 anchors → bridge-a → v2 anchors → ...
-  const navTargets = Array.from(document.querySelectorAll('.spread, .page-anchor'));
+  // Nav targets normally use invisible page anchors so vertical scrolling can
+  // move the desktop storybook horizontally. In the intentional stacked
+  // fallback (short or medium viewports), actual pages become the targets.
+  const isStackedStorybook = () => window.matchMedia('(max-width: 1120px), (max-height: 820px)').matches;
+  const getNavTargets = () => Array.from(document.querySelectorAll(
+    isStackedStorybook() ? '.spread, .page' : '.spread, .page-anchor'
+  ));
+  let navTargets = getNavTargets();
   const vignettes = Array.from(document.querySelectorAll('.vignette'));
   const opening = document.querySelector('.spread-opening');
   const isMobile = () => window.innerWidth < 800;
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const allowDesignTools = ['localhost', '127.0.0.1', '[::1]'].includes(window.location.hostname);
 
   // Shared between the postcard block (sets it) and the nav-key block
   // (yields to it so arrow keys can browse focused postcards instead).
   let focusedHotspot = null;
+
+  // ===================================================================
+  // SITE SHELL — keep orientation available without competing with the
+  // story. The progress line is visual only; navigation remains native.
+  // ===================================================================
+
+  const siteChrome = document.querySelector('[data-site-chrome]');
+  const progressBar = document.querySelector('[data-progress-bar]');
+
+  if (siteChrome && opening) {
+    let chromeScheduled = false;
+    function updateSiteChrome() {
+      const openingHeight = opening.offsetHeight || window.innerHeight;
+      siteChrome.classList.toggle('is-on-paper', window.scrollY > openingHeight * 0.55);
+      if (progressBar) {
+        const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+        const percentage = Math.max(0, Math.min(100, (window.scrollY / maxScroll) * 100));
+        progressBar.style.width = `${percentage.toFixed(2)}%`;
+      }
+    }
+    function scheduleChromeUpdate() {
+      if (chromeScheduled) return;
+      chromeScheduled = true;
+      requestAnimationFrame(() => {
+        updateSiteChrome();
+        chromeScheduled = false;
+      });
+    }
+    window.addEventListener('scroll', scheduleChromeUpdate, { passive: true });
+    window.addEventListener('resize', scheduleChromeUpdate);
+    updateSiteChrome();
+  }
+
+  const guide = document.querySelector('#reading-guide');
+  const guideTriggers = Array.from(document.querySelectorAll('[data-guide-open]'));
+  let guideTrigger = null;
+
+  if (guide && guideTriggers.length > 0) {
+    guideTriggers.forEach((trigger) => {
+      trigger.addEventListener('click', () => {
+        guideTrigger = trigger;
+        if (!guide.open) guide.showModal();
+      });
+    });
+
+    guide.querySelectorAll('a[href^="#"]').forEach((link) => {
+      link.addEventListener('click', () => guide.close());
+    });
+
+    guide.addEventListener('close', () => {
+      if (guideTrigger) guideTrigger.focus({ preventScroll: true });
+    });
+  }
 
   // ===================================================================
   // OPENING — entrance choreography. Toggle `.is-entered` on the next
@@ -116,7 +176,10 @@
 
     function goTo(i) {
       const clamped = Math.max(0, Math.min(navTargets.length - 1, i));
-      navTargets[clamped].scrollIntoView({ behavior: 'smooth', block: 'start' });
+      navTargets[clamped].scrollIntoView({
+        behavior: prefersReducedMotion ? 'auto' : 'smooth',
+        block: 'start'
+      });
     }
 
     function next() {
@@ -135,6 +198,7 @@
 
     document.addEventListener('keydown', (e) => {
       if (e.metaKey || e.ctrlKey || e.altKey) return;
+      if (document.querySelector('dialog[open]')) return;
       const target = e.target;
       const tag = (target.tagName || '').toLowerCase();
       if (tag === 'input' || tag === 'textarea' || target.isContentEditable) return;
@@ -154,6 +218,10 @@
         e.preventDefault();
         goTo(navTargets.length - 1);
       }
+    });
+
+    window.addEventListener('resize', () => {
+      navTargets = getNavTargets();
     });
   }
 
@@ -183,7 +251,7 @@
 
   const titleEl = document.querySelector('.opening-title-text');
   const titleContainer = document.querySelector('.opening-title');
-  const prefersReduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const prefersReduce = prefersReducedMotion;
 
   if (titleEl && titleContainer) {
     const langs = [

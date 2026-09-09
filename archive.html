@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#FFFCF0">
+  <meta name="description" content="A searchable research archive of feminist science-fiction writers across languages, places, and decades.">
+  <title>Research archive · The Untold Stories</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Display&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Public+Sans:wght@400;500;600&family=JetBrains+Mono&family=Noto+Serif+TC:wght@400;500&family=Noto+Serif+SC:wght@400;500&family=Noto+Serif+JP:wght@400;500&family=Noto+Serif+KR:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="archive.css">
+</head>
+<body class="archive-body">
+  <a class="skip-link" href="#archive-main">Skip to the archive</a>
+
+  <header class="archive-header">
+    <a class="archive-mark" href="index.html" aria-label="The Untold Stories home">
+      <span>The Untold Stories</span>
+      <small>research archive</small>
+    </a>
+    <a class="back-link" href="index.html">← Return to the reading</a>
+  </header>
+
+  <main id="archive-main">
+    <section class="archive-intro" aria-labelledby="archive-title">
+      <p class="eyebrow">A working index · 76 research files</p>
+      <h1 id="archive-title">The writers a single shelf cannot hold.</h1>
+      <p class="intro-copy">Search the research corpus by name, place, language, period, or recurring concern. Every entry opens its source file with works, translation histories, influence notes, and citations intact.</p>
+      <p class="archive-note"><span aria-hidden="true">✦</span> This is a living reading map, not a finished canon.</p>
+    </section>
+
+    <section class="archive-tools" aria-labelledby="browse-title">
+      <div class="tools-heading">
+        <div>
+          <p class="eyebrow">Browse the collection</p>
+          <h2 id="browse-title">Start anywhere.</h2>
+        </div>
+        <p id="result-count" class="result-count" aria-live="polite" aria-atomic="true"></p>
+      </div>
+
+      <form id="archive-controls" class="archive-controls" role="search">
+        <div class="search-field">
+          <label for="archive-search">Search the archive <span class="shortcut-hint" aria-hidden="true">/</span></label>
+          <div class="search-input-wrap">
+            <svg class="search-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none"><circle cx="10.8" cy="10.8" r="6.8" stroke="currentColor" stroke-width="1.7"></circle><path d="m16 16 4.1 4.1" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"></path></svg>
+            <input id="archive-search" name="q" type="search" inputmode="search" autocomplete="off" spellcheck="false" placeholder="Writer, place, language, or theme…">
+            <button id="clear-search" class="clear-search" type="button" hidden aria-label="Clear search">×</button>
+          </div>
+        </div>
+
+        <div class="filter-grid">
+          <div class="select-field">
+            <label for="filter-region">Region</label>
+            <select id="filter-region" name="region">
+              <option value="">Every region</option>
+            </select>
+          </div>
+          <div class="select-field">
+            <label for="filter-language">Writing language</label>
+            <select id="filter-language" name="language">
+              <option value="">Every language</option>
+            </select>
+          </div>
+          <div class="select-field">
+            <label for="filter-period">First active</label>
+            <select id="filter-period" name="period">
+              <option value="">Any period</option>
+              <option value="before-1950">Before 1950</option>
+              <option value="1950-1979">1950–1979</option>
+              <option value="1980-1999">1980–1999</option>
+              <option value="2000-plus">2000 onward</option>
+            </select>
+          </div>
+          <div class="select-field">
+            <label for="filter-theme">Theme</label>
+            <select id="filter-theme" name="theme">
+              <option value="">Every theme</option>
+            </select>
+          </div>
+          <div class="select-field sort-field">
+            <label for="sort-authors">Order</label>
+            <select id="sort-authors" name="sort">
+              <option value="name">Name, A–Z</option>
+              <option value="earliest">Earliest active</option>
+              <option value="latest">Most recent first</option>
+            </select>
+          </div>
+        </div>
+
+        <button id="clear-filters" class="clear-filters" type="reset" hidden>Clear all filters</button>
+      </form>
+    </section>
+
+    <section class="archive-results" aria-labelledby="results-title">
+      <div class="results-heading">
+        <h2 id="results-title">Research files</h2>
+        <p>Open a file to read the source notes.</p>
+      </div>
+      <ol id="author-results" class="author-grid" aria-label="Research files"></ol>
+      <div id="empty-state" class="empty-state" hidden>
+        <p class="eyebrow">No files found</p>
+        <h2>That trail goes quiet here.</h2>
+        <p>Try a broader search, or return to every region and theme.</p>
+        <button id="empty-reset" type="button">Show all research files</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="archive-footer">
+    <p>Built from the site’s working research corpus. Descriptions retain the corpus’s uncertainty, gaps, and source trails.</p>
+    <a href="index.html">Back to <span>The Untold Stories</span></a>
+  </footer>
+
+  <dialog id="author-dialog" class="author-dialog" aria-labelledby="dialog-title">
+    <div class="dialog-shell">
+      <header class="dialog-header">
+        <p id="dialog-kicker" class="eyebrow">Research file</p>
+        <button id="dialog-close" class="dialog-close" type="button" aria-label="Close research file">
+          <span aria-hidden="true">×</span>
+        </button>
+      </header>
+      <div class="dialog-scroll">
+        <h2 id="dialog-title"></h2>
+        <p id="dialog-meta" class="dialog-meta"></p>
+        <div id="dialog-content" class="markdown-content" aria-live="polite"></div>
+      </div>
+      <footer class="dialog-footer">
+        <a id="dialog-source" href="#" target="_blank" rel="noreferrer">Open raw Markdown <span aria-hidden="true">↗</span></a>
+      </footer>
+    </div>
+  </dialog>
+
+  <script src="archive.js" defer></script>
+</body>
+</html>

@@ -247,7 +247,7 @@
     rowsEl.innerHTML = list.map(author => {
       const portrait = portraitOf(author.file);
       const [first, last] = portrait ? splitName(author.name) : [author.name, ''];
-      return `<li><a class="mbt-row" href="../authors-raw/${encodeURIComponent(author.file)}" target="_blank" rel="noreferrer" data-file="${esc(author.file)}" aria-label="${esc(author.name)}, ${esc(author.regionGroup)}, file ${author.folio} (opens in a new tab)">
+      return `<li><a class="mbt-row" href="../authors-raw/${encodeURIComponent(author.file)}" rel="noreferrer" data-file="${esc(author.file)}" aria-haspopup="dialog" aria-label="${esc(author.name)}, ${esc(author.regionGroup)}, file ${author.folio}">
         <span class="mbt-name"><span>${esc(first)}</span>${portrait ? `<span class="mbt-media" aria-hidden="true"><span class="mbt-media-inner"><img src="${portrait}" alt="" width="120" height="120" loading="lazy" decoding="async"></span></span><span>${esc(last)}</span>` : ''}</span>
         <span class="mbt-meta">${esc(author.regionLabel)}, <span>F. ${author.folio}</span><svg class="mbt-row-arrow" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><path d="M4 12 12 4M4 4h8v8"/></svg></span>
       </a></li>`;

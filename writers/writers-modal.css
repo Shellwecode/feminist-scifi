@@ -1,0 +1,145 @@
+/* The author sheet — clicking a writer opens their file, typeset, instead of
+   downloading it. Design: Paper frame "Modal · pop-up sheet (improved)"; every
+   value is lifted from its computed styles. */
+
+:root {
+  --sheet-dur: .42s;
+  --sheet-ease: cubic-bezier(.22, 1, .36, 1);
+  --sheet-hair: #e6e4d929;
+  --sheet-hair-top: #e6e4d947;
+  --sheet-sans: 'Instrument Sans', system-ui, sans-serif;
+  --sheet-measure: 62ch;
+}
+
+/* ---------- the file, typeset ---------- */
+/* No UA margins anywhere: every gap in this design is a flex gap. */
+.sheet-name, .sheet-years, .sheet-text, .sheet-gloss, .sheet-form, .sheet-work-title, .sheet-label { margin: 0; }
+.sheet-label { color: var(--grey-text); font: 400 12px/16px 'Cotham Sans', sans-serif; }
+.sheet-values { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.sheet-text { max-width: var(--sheet-measure); color: var(--ink); font: 400 14px/20px var(--sheet-sans); text-wrap: pretty; }
+.sheet-text em { font-style: italic; }
+.sheet-text strong { font-weight: 600; }
+.sheet-text a { color: var(--ink-soft); text-decoration-thickness: 1px; text-underline-offset: 3px; text-decoration-skip-ink: auto; overflow-wrap: break-word; }
+
+/* a monumental work: title, then its form and gloss tucked under it */
+.sheet-work { display: flex; flex-direction: column; }
+.sheet-work-title { color: var(--ink); font: italic 400 20px/24px 'Instrument Serif', Georgia, serif; text-wrap: pretty; }
+.sheet-work-notes { display: flex; flex-direction: column; gap: 3px; }
+.sheet-form { color: var(--ink-soft); font: 400 16px/22px 'Instrument Serif', Georgia, serif; }
+.sheet-gloss { max-width: var(--sheet-measure); color: var(--ink-soft); font: 400 12px/16px var(--sheet-sans); text-wrap: pretty; }
+.sheet-gloss a { color: inherit; }
+@media (hover: hover) { .sheet-text a:hover, .sheet-gloss a:hover { color: var(--ink); } }
+
+/* ---------- non-Latin runs ----------
+   The five loaded faces are Latin-only, so every other script was falling through
+   to a per-machine default, slanted by whatever run it sat inside. Each run now
+   names its own stack, drops the italic it has no business wearing, and becomes
+   its own bidi island so the space beside it survives.
+   Sizes are optical, measured against Instrument Serif's 14.4px cap-height at 20px.
+   Cyrillic is deliberately absent: it falls to Georgia, which has a real italic. */
+.sheet-x {
+  font-style: normal;            /* none of these scripts has an italic */
+  font-synthesis: none;
+  unicode-bidi: isolate;         /* the run stops reordering its neighbours */
+  margin-inline: .1em;           /* the classic CJK-Latin quarter-space, dialled down */
+}
+.sheet-x[data-script='jpan'] {
+  font-family: 'Hiragino Mincho ProN', 'Hiragino Mincho Pro', 'Yu Mincho', YuMincho, 'Noto Serif JP', serif;
+  font-size: .92em; line-break: strict; word-break: normal;
+}
+.sheet-x[data-script='hani'] {
+  font-family: 'Songti SC', STSong, 'Songti TC', 'Noto Serif SC', 'Source Han Serif SC', serif;
+  font-size: .92em; line-break: strict; word-break: normal;
+}
+.sheet-x[data-script='hang'] {
+  font-family: AppleMyungjo, 'Nanum Myeongjo', 'Noto Serif KR', 'Apple SD Gothic Neo', serif;
+  font-size: .94em; line-break: strict; word-break: normal;
+}
+.sheet-x[data-script='arab'] {
+  font-family: 'Geeza Pro', Baghdad, 'Noto Naskh Arabic', 'Times New Roman', serif;
+  font-size: 1.12em;             /* naskh sits small beside a serif */
+}
+.sheet-x[data-script='hebr'] {
+  font-family: 'New Peninim MT', 'Frank Ruehl CLM', 'Noto Serif Hebrew', 'Times New Roman', serif;
+  font-size: 1.08em;
+}
+.sheet-x[data-script='beng'] {
+  font-family: 'Kohinoor Bangla', 'Noto Serif Bengali', 'Bangla MN', serif;
+  font-size: .97em;
+}
+/* Deeper descenders and taller bodies need the leading the Latin does not. */
+.sheet-work-title:has(.sheet-x) { line-height: 30px; }
+.sheet-text:has(.sheet-x) { line-height: 23px; }
+.sheet-gloss:has(.sheet-x), .sheet-form:has(.sheet-x) { line-height: 19px; }
+.sheet-name:has(.sheet-x) { line-height: 44px; }
+
+/* ---------- identity ---------- */
+.sheet-id { display: flex; align-items: flex-start; gap: 16px; min-width: 0; }
+.sheet-portrait { width: 75px; height: 71px; flex: none; overflow: hidden; background: #f2efe4; }
+.sheet-portrait img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 25%; display: block; }
+.sheet-id-text { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; min-width: 0; }
+.sheet-name { color: var(--ink); font: 400 34px/39px 'Meta-old-French', 'Instrument Serif', Georgia, serif; overflow-wrap: break-word; text-wrap: balance; }
+.sheet-years { color: var(--ink-soft); font: 400 16px/20px 'Cotham Sans', sans-serif; font-variant-numeric: tabular-nums; }
+.sheet-close {
+  width: 19px; flex: none; padding: 0; border: 0; background: none; cursor: pointer;
+  color: var(--grey-text); font: 400 18px/25px 'Instrument Serif', Georgia, serif; text-align: center;
+}
+@media (hover: hover) { .sheet-close:hover { color: var(--ink); } }
+
+/* ---------- footer: the file, and one way to take it ---------- */
+.sheet-foot-line { display: flex; align-items: center; gap: 18px; min-width: 0; flex-wrap: wrap; }
+.sheet-file { color: var(--grey-text); font: 11px/13px var(--mono); font-variant-numeric: tabular-nums; }
+.sheet-foot-rule { width: 1px; height: 11px; flex: none; background: var(--rule); }
+.sheet-download {
+  display: flex; align-items: center; gap: 7px; min-height: 28px; padding: 0;
+  border: 0; background: none; cursor: pointer; text-decoration: none;
+  color: var(--ink-soft); font: 400 12px/16px 'Cotham Sans', sans-serif;
+  transition: color .2s ease-out;
+}
+.sheet-download span { border-bottom: 1px solid var(--rule); transition: border-color .2s ease-out; }
+.sheet-download svg { flex: none; }
+@media (hover: hover) {
+  .sheet-download:hover { color: var(--ink); }
+  .sheet-download:hover span { border-bottom-color: var(--ink); }
+}
+
+/* ---------- the sheet ---------- */
+.sheet-scrim {
+  position: fixed; inset: 0; z-index: 40; background: var(--paper);
+  opacity: 0; animation: sheet-fade var(--sheet-dur) var(--sheet-ease) forwards;
+}
+@keyframes sheet-fade { to { opacity: .82; } }
+
+.sheet {
+  position: fixed; z-index: 41; left: 50%; top: 48px;
+  width: min(784px, calc(100vw - 96px)); max-height: calc(100svh - 96px);
+  display: flex; flex-direction: column; overflow: clip; overflow-wrap: break-word;
+  background: var(--paper); border: 1px solid var(--sheet-hair); border-radius: 8px;
+  box-shadow: 0 24px 64px #2a28241a;
+  transform: translate(-50%, 10px); opacity: 0;
+  animation: sheet-rise var(--sheet-dur) var(--sheet-ease) forwards;
+}
+@keyframes sheet-rise { to { transform: translate(-50%, 0); opacity: 1; } }
+
+.sheet-head {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 24px;
+  padding: 32px 44px 24px; border-bottom: 1px solid var(--sheet-hair); flex: none;
+}
+.sheet-body { flex: 1; min-height: 0; overflow-y: auto; padding: 24px 44px 34px 48px; display: flex; flex-direction: column; gap: 24px; }
+.sheet-row { display: flex; gap: 20px; align-items: flex-start; }
+.sheet-row > .sheet-label { width: 148px; flex: none; padding-top: 7px; }
+.sheet-row > .sheet-values { flex: 1; }
+.sheet-foot {
+  display: flex; align-items: center; justify-content: space-between; gap: 24px;
+  padding: 14px 44px; border-top: 1px solid var(--sheet-hair-top); flex: none;
+}
+
+@media (max-width: 900px) {
+  .sheet { top: 16px; width: calc(100vw - 32px); max-height: calc(100svh - 32px); }
+  .sheet-head, .sheet-body, .sheet-foot { padding-inline: 24px; }
+  .sheet-row { flex-direction: column; gap: 6px; }
+  .sheet-row > .sheet-label { width: auto; padding-top: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sheet-scrim, .sheet { animation-duration: 1ms; }
+}

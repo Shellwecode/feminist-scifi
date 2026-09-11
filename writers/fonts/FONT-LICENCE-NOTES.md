@@ -56,3 +56,18 @@ Our patched `Meta-old-French-ext.woff2` (see `../tools/build-diacritics.py`, whi
 í, ō and Ō) is a Modified Version. It would then have to be distributed under the OFL
 too, carry the licence text, and — if Luuse ever declares a Reserved Font Name — be
 renamed. The `-ext` suffix already keeps it distinct from the original.
+
+## Instrument Sans (added 2026-09-11)
+
+Carries the body voice inside the author sheet (14/20 prose, 12/16 glosses).
+This is the only font here whose licence is unambiguous.
+
+- Licence: SIL Open Font License 1.1. Published by Instrument on Google Fonts;
+  source at github.com/Instrument/instrument-sans. Licence text is in
+  `OFL-InstrumentSans.txt`, taken from that repository.
+- Files: `InstrumentSans-latin.woff2` (29.9 KB) and `InstrumentSans-latin-ext.woff2`
+  (11.1 KB), fetched from fonts.gstatic.com and served locally, so the page still
+  makes no third-party request. The `unicode-range` on each is Google's own.
+- Variable, wght 400–700. Ō and the other macrons live in the `-ext` subset.
+- Not preloaded. The sheet only exists after a click, so these are fetched then
+  rather than blocking first paint.

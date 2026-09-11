@@ -1,2 +1,5 @@
 .DS_Store
 **/.DS_Store
+
+# Prototype sandbox — exploration only; the shipped page lives in writers/
+proto/
